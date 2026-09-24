@@ -1,0 +1,159 @@
+// Docs: https://www.prisma.io/docs
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String   @id @default(cuid())
+  name          String
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  image         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  sessions Session[]
+  accounts Account[]
+
+  scheduleItems ScheduleItem[]
+  pomodoroLogs  PomodoroSession[]
+  examTarget    ExamTarget?
+  preferences   UserPreference?
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  userId                String
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  idToken               String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// ---------- App domain ----------
+
+enum ScheduleCategory {
+  CENTER
+  STUDY
+  PROJECT
+  SPORT
+  REST
+}
+
+enum TaskStatus {
+  PLANNED
+  IN_PROGRESS
+  DONE
+}
+
+enum Weekday {
+  SAT
+  SUN
+  MON
+  TUE
+  WED
+  THU
+  FRI
+}
+
+model ScheduleItem {
+  id        String           @id @default(cuid())
+  userId    String
+  day       Weekday
+  title     String
+  category  ScheduleCategory
+  startTime String // "HH:mm", 24h
+  endTime   String // "HH:mm", 24h
+  status    TaskStatus       @default(PLANNED)
+  notes     String?
+  color     String?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, day])
+  @@map("schedule_item")
+}
+
+model PomodoroSession {
+  id        String    @id @default(cuid())
+  userId    String
+  label     String? // "Math, arabic" etc....
+  focusMin  Int // planned focus minutes
+  breakMin  Int // planned break minutes
+  completed Boolean   @default(false)
+  startedAt DateTime  @default(now())
+  endedAt   DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, startedAt])
+  @@map("pomodoro_session")
+}
+
+model ExamTarget {
+  id         String   @id @default(cuid())
+  userId     String   @unique
+  label      String // like final or exxam anything
+  targetDate DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("exam_target")
+}
+
+model UserPreference {
+  id                  String   @id @default(cuid())
+  userId              String   @unique
+  locale              String   @default("ar") // "ar" | "en"
+  latitude            Float?
+  longitude           Float?
+  cityLabel           String?
+  prayerNotifyEnabled Boolean  @default(true)
+  prayerCalcMethod    Int      @default(5)
+  updatedAt           DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_preference")
+}

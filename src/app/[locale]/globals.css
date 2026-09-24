@@ -1,0 +1,216 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --radius: 0.75rem;
+
+  /* Base surfaces */
+  --background: #f3f5fb;
+  --foreground: #171d33;
+  --card: #ffffff;
+  --card-foreground: #171d33;
+  --popover: #ffffff;
+  --popover-foreground: #171d33;
+  --border: #e6e9f2;
+  --input: #e6e9f2;
+  --ring: #2f4bd6;
+
+
+  --primary: oklch(65.84% 0.1884 250.7);
+  --primary-foreground: #ffffff;
+  --primary-hover: #0578d1;
+  --secondary: #eef1fb;
+  --secondary-foreground: #0694ff;
+  --accent-green: #6ebf64;
+  --accent-green-foreground: #ffffff;
+  --muted: #f1f3f9;
+  --muted-foreground: #6b7280;
+  --destructive: #e5484d;
+  --destructive-foreground: #ffffff;
+
+  /* Category chip colors (schedule views) */
+  --cat-center: #f59e0b;
+  --cat-study: #22c55e;
+  --cat-project: #a855f7;
+  --cat-sport: #06b6d4;
+  --cat-rest: #94a3b8;
+}
+
+@theme inline {
+  --font-sans: var(--font-tajawal), "Segoe UI", sans-serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent-green: var(--accent-green);
+  --color-accent-green-foreground: var(--accent-green-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+
+}
+
+* {
+  border-color: var(--border);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+[dir="rtl"] .rtl-flip {
+  transform: scaleX(-1);
+}
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: #d7dbe8; border-radius: 999px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* ---------- Pomodoro flip-unit ("paper folds up") ---------- */
+.flip-unit {
+  position: relative;
+  perspective: 400px;
+}
+.flip-unit-face {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  backface-visibility: hidden;
+}
+.flip-unit-flap {
+  transform-origin: top center;
+  animation: flip-fold-up 340ms cubic-bezier(0.5, 0, 0.75, 0) forwards;
+  will-change: transform, opacity;
+}
+@keyframes flip-fold-up {
+  0% { transform: rotateX(0deg); opacity: 1; }
+  70% { opacity: 1; }
+  100% { transform: rotateX(-100deg); opacity: 0; }
+}
+
+/* ---------- Mobile sidebar drawer ---------- */
+.sidebar-backdrop {
+  animation: fade-in 180ms ease-out;
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Append to globals.css. Colour comes from `currentColor` (text-primary on the
+   element), so it works with any theme token format and dark mode. */
+@layer components {
+  .volume-slider {
+    --thumb: 16px;
+    --track: 6px;
+    --p: 0;
+    --dir: right;
+    /* The thumb centre travels from thumb/2 to (100% - thumb/2), so the fill
+       has to end there too or it drifts away from the thumb at the edges. */
+    --stop: calc(var(--thumb) / 2 + (100% - var(--thumb)) * var(--p));
+    --rest: color-mix(in srgb, currentColor 20%, transparent);
+
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    height: 1.5rem; /* comfortable touch target around a 6px track */
+    margin: 0;
+    background: transparent;
+    cursor: pointer;
+    outline: none; /* the focus ring is drawn on the thumb instead */
+    touch-action: pan-y; /* horizontal drag moves the slider, vertical still scrolls */
+  }
+
+  /* A range input starts at the right edge in RTL, so the fill flips too. */
+  [dir="rtl"] .volume-slider {
+    --dir: left;
+  }
+
+  /* WebKit / Blink. Vendor selectors must stay in separate rules: one invalid
+     selector in a list drops the whole rule. */
+  .volume-slider::-webkit-slider-runnable-track {
+    height: var(--track);
+    border-radius: 9999px;
+    background: linear-gradient(to var(--dir), currentColor var(--stop), var(--rest) var(--stop));
+  }
+  .volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: var(--thumb);
+    height: var(--thumb);
+    margin-top: calc((var(--track) - var(--thumb)) / 2);
+    border: 0;
+    border-radius: 9999px;
+    background: currentColor;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.35);
+    transition: transform 150ms ease, box-shadow 150ms ease;
+  }
+
+  /* Firefox */
+  .volume-slider::-moz-range-track {
+    height: var(--track);
+    border-radius: 9999px;
+    background: linear-gradient(to var(--dir), currentColor var(--stop), var(--rest) var(--stop));
+  }
+  .volume-slider::-moz-range-thumb {
+    box-sizing: border-box;
+    width: var(--thumb);
+    height: var(--thumb);
+    border: 0;
+    border-radius: 9999px;
+    background: currentColor;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.35);
+    transition: transform 150ms ease, box-shadow 150ms ease;
+  }
+
+  .volume-slider:not(:disabled):hover::-webkit-slider-thumb { transform: scale(1.15); }
+  .volume-slider:not(:disabled):hover::-moz-range-thumb { transform: scale(1.15); }
+
+  .volume-slider:focus-visible::-webkit-slider-thumb {
+    box-shadow: 0 0 0 4px color-mix(in srgb, currentColor 30%, transparent), 0 1px 3px rgb(0 0 0 / 0.35);
+  }
+  .volume-slider:focus-visible::-moz-range-thumb {
+    box-shadow: 0 0 0 4px color-mix(in srgb, currentColor 30%, transparent), 0 1px 3px rgb(0 0 0 / 0.35);
+  }
+
+  .volume-slider:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .volume-slider::-webkit-slider-thumb,
+    .volume-slider::-moz-range-thumb {
+      transition: none;
+    }
+  }
+}

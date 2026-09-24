@@ -1,0 +1,177 @@
+{
+  "app": {
+    "name": "Gadwly"
+  },
+  "nav": {
+    "home": "Home",
+    "schedule": "My Schedule",
+    "counter": "Focus Timer",
+    "account": "Account",
+    "collapse": "Collapse sidebar",
+    "logout": "Log out",
+    "scheduleList": "List view",
+    "scheduleGrid": "Weekly grid",
+    "language": "Language"
+  },
+  "topbar": {
+    "greeting": "Hi {name}",
+    "today": "Today"
+  },
+  "dashboard": {
+    "greeting": "Welcome, {name}",
+    "subtitle": "Keep track of your schedule and manage your time from here.",
+    "tasksToday": "Tasks today",
+    "hoursPlanned": "Hours planned",
+    "completed": "Completed tasks",
+    "streak": "Day streak",
+    "examCountdown": "Exam countdown",
+    "noExamSet": "You haven't set an exam date yet",
+    "setExamDate": "Set date",
+    "prayerTimes": "Prayer times",
+    "enableLocation": "Enable location",
+    "locating": "Finding your location...",
+    "nextIn": "Next in",
+    "weeklyActivity": "Your activity this week",
+    "goToSchedule": "Go to my schedule"
+  },
+  "exam": {
+    "today": "Today!",
+    "days": "{value} days left",
+    "weeks": "About {value} weeks left",
+    "monthsEarly": "About early {month}",
+    "monthsMid": "About mid {month}",
+    "monthsLate": "About late {month}",
+    "dialogTitle": "Exam date",
+    "labelField": "Exam name",
+    "dateField": "Approximate date",
+    "save": "Save"
+  },
+  "months": {
+    "1": "January",
+    "2": "February",
+    "3": "March",
+    "4": "April",
+    "5": "May",
+    "6": "June",
+    "7": "July",
+    "8": "August",
+    "9": "September",
+    "10": "October",
+    "11": "November",
+    "12": "December"
+  },
+  "days": {
+    "SAT": "Saturday",
+    "SUN": "Sunday",
+    "MON": "Monday",
+    "TUE": "Tuesday",
+    "WED": "Wednesday",
+    "THU": "Thursday",
+    "FRI": "Friday"
+  },
+  "prayers": {
+    "Fajr": "Fajr",
+    "Dhuhr": "Dhuhr",
+    "Asr": "Asr",
+    "Maghrib": "Maghrib",
+    "Isha": "Isha"
+  },
+  "schedule": {
+    "title": "My weekly schedule",
+    "subtitle": "Organize your study, centers and activities in one place",
+    "addTask": "Add activity",
+    "editTask": "Edit activity",
+    "allDays": "All days",
+    "grid": {
+      "week": "Week",
+      "day": "Day",
+      "now": "Now",
+      "fit": "Fit",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "resetZoom": "Reset zoom",
+      "expand": "Full screen",
+      "close": "Close",
+      "hint": "Click a slot, or drag to set the duration",
+      "hintTouch": "Tap a slot to add a task, pinch to zoom"
+    },
+    "table": {
+      "day": "Day",
+      "activity": "Subject / Activity",
+      "category": "Type",
+      "start": "From",
+      "end": "To",
+      "duration": "Duration",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "category": {
+      "CENTER": "Center / class",
+      "STUDY": "Study",
+      "PROJECT": "Project / coding",
+      "SPORT": "Sport",
+      "REST": "Rest"
+    },
+    "status": {
+      "PLANNED": "Planned",
+      "IN_PROGRESS": "In progress",
+      "DONE": "Done"
+    },
+    "form": {
+      "titlePlaceholder": "e.g. Arabic center, Math...",
+      "notesPlaceholder": "Goals, homework, center location...",
+      "notes": "Notes",
+      "cancel": "Cancel",
+      "save": "Save activity",
+      "delete": "Delete"
+    },
+    "empty": "No activities yet — add your first one.",
+    "viewList": "List",
+    "viewGrid": "Weekly grid",
+    "gridEmpty": "Tap any empty slot to add an activity",
+    "addAt": "Add at"
+  },
+  "counter": {
+    "title": "Focus timer",
+    "subtitle": "A distraction-free session on one task",
+    "focus": "Focus",
+    "break": "Break",
+    "start": "Start",
+    "pause": "Pause",
+    "reset": "Reset",
+    "sessionsToday": "Sessions today",
+    "whatWorking": "What are you working on?",
+    "workingPlaceholder": "e.g. Math",
+    "settings": "Settings",
+    "focusMinutes": "Focus minutes",
+    "breakMinutes": "Break minutes",
+    "sounds": "Ambient sounds",
+    "rain": "Rain",
+    "fire": "Fire",
+    "exitFullscreen": "Exit fullscreen",
+    "hours": "hr",
+    "minutes": "min",
+    "seconds": "sec",
+    "closeSettings": "Close",
+    "save": "Save",
+    "noise": "Brown noise",
+    "skip": "Skip",
+    "chime": "Chime when a session ends",
+    "fullscreen": "Full screen"
+  },
+  "auth": {
+    "loginTitle": "Sign in to Gadwly",
+    "loginSubtitle": "Organize your time, track your study, and your prayer times in one place.",
+    "continueWithGoogle": "Continue with Google",
+    "signedInAs": "Signed in as",
+    "welcomeBack": "Welcome back",
+    "heroTitle": "Sign in securely in seconds",
+    "heroDescription": "One Google account, no passwords to remember.",
+    "featureFast": "One-click sign in",
+    "featureSecure": "Advanced protection for your account and session",
+    "featurePasswordless": "No passwords to forget or leak",
+    "redirectingToGoogle": "Redirecting to Google…",
+    "signInFailed": "Sign in failed. Please try again.",
+    "loginNotice": "We only use your name and email to create your account."
+  }
+}
