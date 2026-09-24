@@ -15,7 +15,10 @@
   },
   "topbar": {
     "greeting": "أهلاً {name}",
-    "today": "اليوم"
+    "today": "اليوم",
+    "openMenu": "فتح القائمة",
+    "switchLanguage": "تغيير اللغة",
+    "account": "قائمة الحساب"
   },
   "dashboard": {
     "greeting": "أهلاً بيك، {name}",
@@ -173,5 +176,10 @@
     "redirectingToGoogle": "جاري التحويل إلى جوجل…",
     "signInFailed": "تعذّر تسجيل الدخول. حاول مرة أخرى.",
     "loginNotice": "نستخدم اسمك وبريدك فقط لإنشاء حسابك."
+  },
+  "notFound": {
+    "title": "الصفحة غير موجودة",
+    "description": "الرابط الذي فتحته غير صحيح أو تم نقل الصفحة.",
+    "backHome": "العودة إلى الرئيسية"
   }
 }

@@ -1,7 +1,9 @@
 "use client";
 
-import { useTranslations, useLocale } from "next-intl";
-import { Bell, ChevronDown, Home, LogOut, Menu, User } from "lucide-react";
+import { ChevronDown, Home, LogOut, Menu } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import { useTransition } from "react";
+import { useSidebar } from "@/components/sidebar-context";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,9 +14,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
-import { useSidebar } from "@/components/sidebar-context";
 import { signOut, useSession } from "@/lib/auth-client";
-import { AvatarImage, Avatar, AvatarFallback } from "./ui/avatar";
+import { UserAvatar } from "./user-avatar";
 
 const rowClass = "h-11 gap-3 rounded-none px-5 text-sm font-medium";
 
@@ -26,24 +27,41 @@ export function Topbar({ title }: { title: string }) {
   const router = useRouter();
   const { data: session } = useSession();
   const { setMobileOpen } = useSidebar();
+  const [isSigningOut, startSignOut] = useTransition();
+
+  const user = session?.user;
+  const otherLocale = locale === "ar" ? "en" : "ar";
 
   function toggleLocale() {
-    router.replace(pathname, { locale: locale === "ar" ? "en" : "ar" });
+    router.replace(pathname, { locale: otherLocale });
   }
-  const signOutLogic = () => {
-    signOut();
-    router.refresh()
+
+  function handleSignOut() {
+    // The transition keeps `isSigningOut` true until the async work finishes,
+    // which also blocks double submits.
+    startSignOut(async () => {
+      // Wait for the server to clear the session cookies before navigating.
+      // Before, refresh() ran while the request was still in flight and the
+      // page re-rendered with the old session.
+      await signOut();
+      router.replace("/login");
+      // Purge the client router cache so no authenticated page is served
+      // from memory (back button, prefetched routes).
+      router.refresh();
+      // If the sign-out request failed, /login re-validates on the server and
+      // sends the user back, so the UI never claims a logout that didn't happen.
+    });
   }
+
   return (
-    <header
-      className="sticky top-0 z-30 flex h-[76px] items-center gap-2 px-3 text-background sm:gap-4 sm:px-6"
-      style={{ backgroundColor: "var(--accent-green)" }}
-    >
+    <header className="sticky top-0 z-30 flex h-[76px] items-center gap-2 bg-[var(--accent-green)] px-3 text-background sm:gap-4 sm:px-6">
       <button
+        type="button"
         onClick={() => setMobileOpen(true)}
-        className="grid h-9 w-9 shrink-0 place-items-center rounded-full hover:bg-background/10 md:hidden"
+        aria-label={t("openMenu")}
+        className="grid size-9 shrink-0 place-items-center rounded-full hover:bg-background/10 md:hidden"
       >
-        <Menu className="h-5 w-5" />
+        <Menu className="size-5" aria-hidden />
       </button>
 
       <h1 className="min-w-0 flex-1 truncate text-base font-extrabold sm:text-lg">
@@ -52,42 +70,26 @@ export function Topbar({ title }: { title: string }) {
 
       <div className="flex shrink-0 items-center gap-1 sm:gap-2">
         <button
+          type="button"
           onClick={toggleLocale}
-          className="flex gap-1 rounded-lg px-2 py-1.5 text-xs font-bold hover:bg-background/10 sm:px-2.5"
-          title="Switch language"
+          aria-label={t("switchLanguage")}
+          className="flex items-center gap-1 rounded-lg px-2 py-1.5 text-xs font-bold hover:bg-background/10 sm:px-2.5"
         >
-          {locale === "ar" ? "EN" : "العربية"}
-          <ChevronDown className="h-3.5 w-3.5" />
+          <span lang={otherLocale}>{locale === "ar" ? "EN" : "العربية"}</span>
+          <ChevronDown className="size-3.5" aria-hidden />
         </button>
 
-        {/* <button className="grid h-9 w-9 place-items-center rounded-full hover:bg-background/10">
-          <Bell className="h-4.5 w-4.5" />
-        </button> */}
-
-        {/* Profile */}
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
               <button
                 type="button"
-                className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-[8px]  bg-white/20 outline-none"
+                aria-label={t("account")}
+                className="size-9 shrink-0 overflow-hidden rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-background/70"
               />
             }
           >
-            {session?.user?.image ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <Avatar>
-                <AvatarImage
-                  src={session.user.image}
-                  alt="User Avatar"
-                  className="h-full w-full object-cover rounded-[8px]"
-                  // className="grayscale"
-                />
-                 <AvatarFallback>{session.user.name?.split(" ").map(n => n[0]).join("")}</AvatarFallback>
-              </Avatar>
-            ) : (
-              <User className="h-4 w-4" />
-            )}
+            <UserAvatar name={user?.name} image={user?.image} />
           </DropdownMenuTrigger>
 
           <DropdownMenuContent
@@ -102,13 +104,19 @@ export function Topbar({ title }: { title: string }) {
 
             <DropdownMenuSeparator className="mx-5 my-2 h-1 rounded-full bg-muted" />
 
-            <DropdownMenuGroup>
-              <DropdownMenuLabel className="px-5 py-2 text-sm font-semibold text-foreground">
-                {t("greeting", { name: session?.user?.name ?? "" })}
-              </DropdownMenuLabel>
-            </DropdownMenuGroup>
+            {user?.name && (
+              <DropdownMenuGroup>
+                <DropdownMenuLabel className="px-5 py-2 text-sm font-semibold text-foreground">
+                  {t("greeting", { name: user.name })}
+                </DropdownMenuLabel>
+              </DropdownMenuGroup>
+            )}
 
-            <DropdownMenuItem onClick={signOutLogic} className={rowClass}>
+            <DropdownMenuItem
+              onClick={handleSignOut}
+              disabled={isSigningOut}
+              className={rowClass}
+            >
               <LogOut className="size-4 text-sky-500" />
               {tNav("logout")}
             </DropdownMenuItem>
