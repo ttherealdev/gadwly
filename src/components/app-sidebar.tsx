@@ -19,8 +19,8 @@ export function AppSidebar() {
   const { collapsed, setCollapsed, mobileOpen, setMobileOpen } = useSidebar();
 
   const homeActive = pathname === "/gadwly";
-  const scheduleActive = pathname.startsWith("/schedule");
-  const counterActive = pathname.startsWith("/counter");
+  const scheduleActive = pathname.startsWith("/gadwly/schedule");
+  const counterActive = pathname.startsWith("/gadwly/counter");
 
   const renderContent = (compact: boolean) => {
     const itemClass = (active: boolean) =>
