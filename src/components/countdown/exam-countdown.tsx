@@ -2,7 +2,7 @@
 
 import { GraduationCap, Pencil, Plus, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -43,21 +43,16 @@ export function ExamCountdown() {
   const { data } = trpc.exams.list.useQuery();
   const exams = data ?? EMPTY_EXAMS;
 
-  const anyUrgent = useMemo(
-    () =>
-      exams.some((e) => {
-        const ms = new Date(e.targetDate).getTime() - Date.now();
-        return ms > 0 && ms < 60 * 60 * 1000;
-      }),
-    [exams],
-  );
   const now = useTick();
-
+  const savingRef = useRef(false);
   const utils = trpc.useUtils();
   const upsert = trpc.exams.upsert.useMutation({
     onSuccess: () => {
       utils.exams.list.invalidate();
       setOpen(false);
+    },
+    onSettled: () => {
+      savingRef.current = false;
     },
   });
   const remove = trpc.exams.delete.useMutation({
@@ -85,7 +80,8 @@ export function ExamCountdown() {
   }
 
   function save() {
-    if (!label.trim() || !date || upsert.isPending) return;
+    if (!label.trim() || !date || savingRef.current) return;
+    savingRef.current = true;
     upsert.mutate({
       id: editing?.id,
       label: label.trim(),
