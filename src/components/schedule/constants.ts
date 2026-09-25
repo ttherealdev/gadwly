@@ -1,3 +1,6 @@
+import { Circle, CircleDot, CheckCircle2 } from "lucide-react";
+
+
 // Shared between the list and grid schedule views.
 export const DAYS = ["SAT", "SUN", "MON", "TUE", "WED", "THU", "FRI"] as const;
 export type Day = (typeof DAYS)[number];
@@ -34,3 +37,27 @@ export type ScheduleItemDTO = {
   status: Status;
   notes: string | null;
 };
+
+// icon: shown next to the item title in the grid (DONE) and as the pill icon in the list view.
+// textClass / dotClass: grid view — the DONE checkmark color and the IN_PROGRESS pulsing dot color.
+// pillClass: list view — the full status-pill background + text color.
+export const STATUS_META = {
+  PLANNED: {
+    icon: Circle,
+    textClass: "text-muted-foreground",
+    dotClass: "bg-muted-foreground",
+    pillClass: "bg-muted text-muted-foreground hover:bg-secondary",
+  },
+  IN_PROGRESS: {
+    icon: CircleDot,
+    textClass: "text-amber-600 dark:text-amber-400",
+    dotClass: "bg-amber-500",
+    pillClass: "bg-amber-500/15 text-amber-600 hover:bg-amber-500/25 dark:text-amber-400",
+  },
+  DONE: {
+    icon: CheckCircle2,
+    textClass: "text-accent-green",
+    dotClass: "bg-accent-green",
+    pillClass: "bg-accent-green/15 text-accent-green hover:bg-accent-green/25",
+  },
+} as const;

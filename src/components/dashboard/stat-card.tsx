@@ -20,11 +20,11 @@ export function StatCard({
   }[tint];
 
   return (
-    <Card>
+    <Card className="rounded-[4px] border-none">
       <CardContent className="flex items-center gap-4 p-5">
         <div
           className={cn(
-            "grid h-12 w-12 shrink-0 place-items-center rounded-full",
+            "grid h-12 w-12 shrink-0 place-items-center rounded-[4px]",
             tintClass,
           )}
         >

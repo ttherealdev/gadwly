@@ -7,6 +7,7 @@ import { Plus, Rows3, LayoutGrid as GridIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 import { useRouter, usePathname } from "@/i18n/navigation";
 import { trpc } from "@/lib/trpc";
 import { DAYS, type Day, type ScheduleItemDTO } from "./constants";
@@ -40,6 +41,12 @@ export function ScheduleTable() {
     () => (dayFilter === "ALL" ? items : items.filter((i) => i.day === dayFilter)),
     [items, dayFilter]
   );
+
+  const countByDay = useMemo(() => {
+    const map: Record<string, number> = {};
+    for (const i of items) map[i.day] = (map[i.day] ?? 0) + 1;
+    return map;
+  }, [items]);
 
   function nextStatus(s: string) {
     return s === "PLANNED" ? "IN_PROGRESS" : s === "IN_PROGRESS" ? "DONE" : "PLANNED";
@@ -80,20 +87,54 @@ export function ScheduleTable() {
         </div>
       </CardHeader>
 
+      {/*
+        A day filter with 8 options (ALL + 7 days) doesn't fit one line on mobile.
+        TabsList has a fixed height, so letting it `flex-wrap` made the second row
+        of chips float on top of the content below instead of pushing it down —
+        that's the overlap in the screenshot. A single non-wrapping scroll row
+        has no fixed-height ceiling to break, and scrolls instead of overlapping.
+      */}
       {view === "list" && (
-        <div className="px-5">
-          <Tabs value={dayFilter} onValueChange={(v) => setDayFilter(v as Day | "ALL")}>
-            <TabsList className="flex-wrap">
-              <TabsTrigger value="ALL">{t("allDays")}</TabsTrigger>
-              {DAYS.map((d) => (
-                <TabsTrigger key={d} value={d}>{td(d)}</TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
+        <div
+          role="tablist"
+          aria-label={t("table.day")}
+          className="-mx-1 flex gap-1.5 overflow-x-auto px-6 pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {(["ALL", ...DAYS] as const).map((d) => {
+            const active = dayFilter === d;
+            const count = d === "ALL" ? items.length : countByDay[d] ?? 0;
+            return (
+              <button
+                key={d}
+                type="button"
+                role="tab"
+                aria-selected={active}
+                onClick={() => setDayFilter(d)}
+                className={cn(
+                  "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border px-3.5 text-sm font-semibold transition-colors",
+                  active
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border bg-card text-muted-foreground hover:bg-secondary",
+                )}
+              >
+                {d === "ALL" ? t("allDays") : td(d)}
+                {count > 0 && (
+                  <span
+                    className={cn(
+                      "grid min-w-5 place-items-center rounded-full px-1 text-[10px] font-bold tabular-nums",
+                      active ? "bg-white/25" : "bg-secondary",
+                    )}
+                  >
+                    {count}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
       )}
 
-     <CardContent className={view === "grid" ? "px-2 pt-2 sm:px-5 sm:pt-4" : "pt-4"}>
+      <CardContent className="pt-4">
         {isLoading ? null : view === "list" ? (
           <ScheduleListView
             items={filtered}

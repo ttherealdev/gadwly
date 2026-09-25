@@ -1,95 +1,242 @@
 "use client";
 
-import { useState } from "react";
+import { GraduationCap, Pencil, Plus, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { GraduationCap, Pencil } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button, buttonVariants } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger,
-} from "@/components/ui/dialog";
 import { trpc } from "@/lib/trpc";
-import { humanTimeUntil } from "@/lib/utils";
+import { useTick } from "@/hooks/use-tick";
+
+type ExamDTO = { id: string; label: string; targetDate: string | Date };
+type Parts = { days: number; hours: number; minutes: number; seconds: number };
+
+const EMPTY_EXAMS: ExamDTO[] = [];
+
+
+
+function diffParts(target: Date, now: Date): Parts | null {
+  const ms = target.getTime() - now.getTime();
+  if (ms <= 0) return null;
+  const totalSec = Math.floor(ms / 1000);
+  return {
+    days: Math.floor(totalSec / 86400),
+    hours: Math.floor((totalSec % 86400) / 3600),
+    minutes: Math.floor((totalSec % 3600) / 60),
+    seconds: totalSec % 60,
+  };
+}
+
+const pad = (n: number) => String(n).padStart(2, "0");
 
 export function ExamCountdown() {
   const t = useTranslations("dashboard");
   const te = useTranslations("exam");
-  const tm = useTranslations("months");
+
+  const { data } = trpc.exams.list.useQuery();
+  const exams = data ?? EMPTY_EXAMS;
+
+  const anyUrgent = useMemo(
+    () =>
+      exams.some((e) => {
+        const ms = new Date(e.targetDate).getTime() - Date.now();
+        return ms > 0 && ms < 60 * 60 * 1000;
+      }),
+    [exams],
+  );
+  const now = useTick();
 
   const utils = trpc.useUtils();
-  const { data: exam } = trpc.preferences.getExamTarget.useQuery();
-  const setExam = trpc.preferences.setExamTarget.useMutation({
-    onSuccess: () => utils.preferences.getExamTarget.invalidate(),
+  const upsert = trpc.exams.upsert.useMutation({
+    onSuccess: () => {
+      utils.exams.list.invalidate();
+      setOpen(false);
+    },
+  });
+  const remove = trpc.exams.delete.useMutation({
+    onSuccess: () => utils.exams.list.invalidate(),
   });
 
   const [open, setOpen] = useState(false);
-  const [label, setLabel] = useState(exam?.label ?? "arabic");
-  const [date, setDate] = useState(
-    exam?.targetDate ? new Date(exam.targetDate).toISOString().slice(0, 10) : ""
-  );
+  const [editing, setEditing] = useState<ExamDTO | null>(null);
+  const [label, setLabel] = useState("");
+  const [date, setDate] = useState("");
+  const [confirmDelete, setConfirmDelete] = useState<ExamDTO | null>(null);
 
-  function save() {
-    if (!date) return;
-    setExam.mutate({ label, targetDate: new Date(date) });
-    setOpen(false);
+  function openAdd() {
+    setEditing(null);
+    setLabel("");
+    setDate("");
+    setOpen(true);
   }
 
-  const humanized = exam ? humanTimeUntil(new Date(exam.targetDate)) : null;
+  function openEdit(exam: ExamDTO) {
+    setEditing(exam);
+    setLabel(exam.label);
+    setDate(new Date(exam.targetDate).toISOString().slice(0, 10));
+    setOpen(true);
+  }
+
+  function save() {
+    if (!label.trim() || !date) return;
+    upsert.mutate({ id: editing?.id, label: label.trim(), targetDate: new Date(date) });
+  }
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className="rounded-[4px] border-none">
+      <CardHeader className="flex-row items-center gap-2">
         <CardTitle className="flex items-center gap-2">
           <GraduationCap className="h-4 w-4 text-primary" />
-          {exam ? exam.label : t("examCountdown")}
+          {t("examCountdown")}
         </CardTitle>
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger className={buttonVariants({ size: "icon", variant: "ghost" })}>
-            <Pencil className="h-4 w-4" />
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{te("dialogTitle")}</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-3">
-              <div className="space-y-1.5">
-                <Label>{te("labelField")}</Label>
-                <Input value={label} onChange={(e) => setLabel(e.target.value)} />
-              </div>
-              <div className="space-y-1.5">
-                <Label>{te("dateField")}</Label>
-                <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="green" onClick={save}>{te("save")}</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        {exams.length > 0 && (
+          <Button
+            size="icon"
+            variant="ghost"
+            className="ms-auto"
+            onClick={openAdd}
+            aria-label={t("setExamDate")}
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
+        )}
       </CardHeader>
+
       <CardContent>
-        {!exam ? (
+        {exams.length === 0 ? (
           <div className="flex flex-col items-start gap-2">
             <p className="text-sm text-muted-foreground">{t("noExamSet")}</p>
-            <Button size="sm" variant="secondary" onClick={() => setOpen(true)}>
+            <Button size="sm" variant="secondary" onClick={openAdd}>
               {t("setExamDate")}
             </Button>
           </div>
         ) : (
-          <p className="text-2xl font-extrabold text-primary">
-            {humanized?.unit === "today" && te("today")}
-            {humanized?.unit === "days" && te("days", { value: humanized.value })}
-            {humanized?.unit === "weeks" && te("weeks", { value: humanized.value })}
-            {humanized?.unit === "months" &&
-              te(
-                humanized.half === "early" ? "monthsEarly" : humanized.half === "mid" ? "monthsMid" : "monthsLate",
-                { month: tm(String(new Date(exam.targetDate).getMonth() + 1)) }
-              )}
-          </p>
+          <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {exams.map((exam) => {
+              const parts = diffParts(new Date(exam.targetDate), now);
+              const isToday = parts && parts.days === 0 && parts.hours === 0 && parts.minutes < 1;
+              return (
+                <div
+                  key={exam.id}
+                  className="w-52 shrink-0 rounded-[4px] border border-border p-3"
+                >
+                  <div className="flex items-start justify-between gap-1">
+                    <p className="min-w-0 truncate text-sm font-bold" title={exam.label}>
+                      {exam.label}
+                    </p>
+                    <div className="flex shrink-0 gap-0.5">
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="size-7"
+                        onClick={() => openEdit(exam)}
+                        aria-label={te("dialogTitleEdit")}
+                      >
+                        <Pencil className="size-3.5" />
+                      </Button>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="size-7 text-destructive hover:text-destructive"
+                        onClick={() => setConfirmDelete(exam)}
+                        aria-label={te("delete")}
+                      >
+                        <Trash2 className="size-3.5" />
+                      </Button>
+                    </div>
+                  </div>
+
+                  {!parts ? (
+                    <p className="mt-3 text-sm font-bold text-muted-foreground">{te("passed")}</p>
+                  ) : isToday ? (
+                    <p className="mt-3 text-lg font-extrabold text-primary">{te("today")}</p>
+                  ) : (
+                    <div className="mt-3 grid grid-cols-4 gap-1" dir="ltr">
+                      <TimeUnit value={parts.days} unit={te("unitDays")} />
+                      <TimeUnit value={parts.hours} unit={te("unitHours")} />
+                      <TimeUnit value={parts.minutes} unit={te("unitMinutes")} />
+                      <TimeUnit value={parts.seconds} unit={te("unitSeconds")} />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         )}
       </CardContent>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{editing ? te("dialogTitleEdit") : te("dialogTitleAdd")}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div className="space-y-1.5">
+              <Label>{te("labelField")}</Label>
+              <Input
+                value={label}
+                onChange={(e) => setLabel(e.target.value)}
+                placeholder={te("labelPlaceholder")}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>{te("dateField")}</Label>
+              <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="secondary" onClick={() => setOpen(false)}>
+              {te("cancel")}
+            </Button>
+            <Button variant="green" onClick={save} disabled={!label.trim() || !date}>
+              {te("save")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!confirmDelete} onOpenChange={(v) => !v && setConfirmDelete(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{te("delete")}</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            {te("deleteConfirm", { label: confirmDelete?.label ?? "" })}
+          </p>
+          <DialogFooter>
+            <Button variant="secondary" onClick={() => setConfirmDelete(null)}>
+              {te("cancel")}
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                if (confirmDelete) remove.mutate({ id: confirmDelete.id });
+                setConfirmDelete(null);
+              }}
+            >
+              {te("delete")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Card>
+  );
+}
+
+function TimeUnit({ value, unit }: { value: number; unit: string }) {
+  return (
+    <div className="flex flex-col items-center rounded-[4px] bg-muted py-1.5">
+      <span className="text-base font-extrabold tabular-nums">{pad(value)}</span>
+      <span className="text-[9px] font-medium text-muted-foreground">{unit}</span>
+    </div>
   );
 }

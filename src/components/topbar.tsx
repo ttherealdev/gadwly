@@ -37,19 +37,10 @@ export function Topbar({ title }: { title: string }) {
   }
 
   function handleSignOut() {
-    // The transition keeps `isSigningOut` true until the async work finishes,
-    // which also blocks double submits.
     startSignOut(async () => {
-      // Wait for the server to clear the session cookies before navigating.
-      // Before, refresh() ran while the request was still in flight and the
-      // page re-rendered with the old session.
       await signOut();
       router.replace("/login");
-      // Purge the client router cache so no authenticated page is served
-      // from memory (back button, prefetched routes).
       router.refresh();
-      // If the sign-out request failed, /login re-validates on the server and
-      // sends the user back, so the UI never claims a logout that didn't happen.
     });
   }
 
@@ -97,7 +88,7 @@ export function Topbar({ title }: { title: string }) {
             sideOffset={8}
             className="min-w-80 rounded-[4px] p-0 py-2"
           >
-            <DropdownMenuItem render={<Link href="/" />} className={rowClass}>
+            <DropdownMenuItem render={<Link href="/gadwly" />} className={rowClass}>
               <Home className="size-4 text-sky-500" />
               {tNav("home")}
             </DropdownMenuItem>

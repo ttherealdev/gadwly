@@ -202,7 +202,7 @@ export type UserWhereInput = {
   accounts?: Prisma.AccountListRelationFilter
   scheduleItems?: Prisma.ScheduleItemListRelationFilter
   pomodoroLogs?: Prisma.PomodoroSessionListRelationFilter
-  examTarget?: Prisma.XOR<Prisma.ExamTargetNullableScalarRelationFilter, Prisma.ExamTargetWhereInput> | null
+  examTargets?: Prisma.ExamTargetListRelationFilter
   preferences?: Prisma.XOR<Prisma.UserPreferenceNullableScalarRelationFilter, Prisma.UserPreferenceWhereInput> | null
 }
 
@@ -218,7 +218,7 @@ export type UserOrderByWithRelationInput = {
   accounts?: Prisma.AccountOrderByRelationAggregateInput
   scheduleItems?: Prisma.ScheduleItemOrderByRelationAggregateInput
   pomodoroLogs?: Prisma.PomodoroSessionOrderByRelationAggregateInput
-  examTarget?: Prisma.ExamTargetOrderByWithRelationInput
+  examTargets?: Prisma.ExamTargetOrderByRelationAggregateInput
   preferences?: Prisma.UserPreferenceOrderByWithRelationInput
 }
 
@@ -237,7 +237,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   accounts?: Prisma.AccountListRelationFilter
   scheduleItems?: Prisma.ScheduleItemListRelationFilter
   pomodoroLogs?: Prisma.PomodoroSessionListRelationFilter
-  examTarget?: Prisma.XOR<Prisma.ExamTargetNullableScalarRelationFilter, Prisma.ExamTargetWhereInput> | null
+  examTargets?: Prisma.ExamTargetListRelationFilter
   preferences?: Prisma.XOR<Prisma.UserPreferenceNullableScalarRelationFilter, Prisma.UserPreferenceWhereInput> | null
 }, "id" | "email">
 
@@ -279,7 +279,7 @@ export type UserCreateInput = {
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   scheduleItems?: Prisma.ScheduleItemCreateNestedManyWithoutUserInput
   pomodoroLogs?: Prisma.PomodoroSessionCreateNestedManyWithoutUserInput
-  examTarget?: Prisma.ExamTargetCreateNestedOneWithoutUserInput
+  examTargets?: Prisma.ExamTargetCreateNestedManyWithoutUserInput
   preferences?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
 }
 
@@ -295,7 +295,7 @@ export type UserUncheckedCreateInput = {
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   scheduleItems?: Prisma.ScheduleItemUncheckedCreateNestedManyWithoutUserInput
   pomodoroLogs?: Prisma.PomodoroSessionUncheckedCreateNestedManyWithoutUserInput
-  examTarget?: Prisma.ExamTargetUncheckedCreateNestedOneWithoutUserInput
+  examTargets?: Prisma.ExamTargetUncheckedCreateNestedManyWithoutUserInput
   preferences?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
 }
 
@@ -311,7 +311,7 @@ export type UserUpdateInput = {
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   scheduleItems?: Prisma.ScheduleItemUpdateManyWithoutUserNestedInput
   pomodoroLogs?: Prisma.PomodoroSessionUpdateManyWithoutUserNestedInput
-  examTarget?: Prisma.ExamTargetUpdateOneWithoutUserNestedInput
+  examTargets?: Prisma.ExamTargetUpdateManyWithoutUserNestedInput
   preferences?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
 }
 
@@ -327,7 +327,7 @@ export type UserUncheckedUpdateInput = {
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   scheduleItems?: Prisma.ScheduleItemUncheckedUpdateManyWithoutUserNestedInput
   pomodoroLogs?: Prisma.PomodoroSessionUncheckedUpdateManyWithoutUserNestedInput
-  examTarget?: Prisma.ExamTargetUncheckedUpdateOneWithoutUserNestedInput
+  examTargets?: Prisma.ExamTargetUncheckedUpdateManyWithoutUserNestedInput
   preferences?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
 }
 
@@ -468,18 +468,18 @@ export type UserUpdateOneRequiredWithoutPomodoroLogsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPomodoroLogsInput, Prisma.UserUpdateWithoutPomodoroLogsInput>, Prisma.UserUncheckedUpdateWithoutPomodoroLogsInput>
 }
 
-export type UserCreateNestedOneWithoutExamTargetInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutExamTargetInput, Prisma.UserUncheckedCreateWithoutExamTargetInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutExamTargetInput
+export type UserCreateNestedOneWithoutExamTargetsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutExamTargetsInput, Prisma.UserUncheckedCreateWithoutExamTargetsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutExamTargetsInput
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutExamTargetNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutExamTargetInput, Prisma.UserUncheckedCreateWithoutExamTargetInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutExamTargetInput
-  upsert?: Prisma.UserUpsertWithoutExamTargetInput
+export type UserUpdateOneRequiredWithoutExamTargetsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutExamTargetsInput, Prisma.UserUncheckedCreateWithoutExamTargetsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutExamTargetsInput
+  upsert?: Prisma.UserUpsertWithoutExamTargetsInput
   connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutExamTargetInput, Prisma.UserUpdateWithoutExamTargetInput>, Prisma.UserUncheckedUpdateWithoutExamTargetInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutExamTargetsInput, Prisma.UserUpdateWithoutExamTargetsInput>, Prisma.UserUncheckedUpdateWithoutExamTargetsInput>
 }
 
 export type UserCreateNestedOneWithoutPreferencesInput = {
@@ -507,7 +507,7 @@ export type UserCreateWithoutSessionsInput = {
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   scheduleItems?: Prisma.ScheduleItemCreateNestedManyWithoutUserInput
   pomodoroLogs?: Prisma.PomodoroSessionCreateNestedManyWithoutUserInput
-  examTarget?: Prisma.ExamTargetCreateNestedOneWithoutUserInput
+  examTargets?: Prisma.ExamTargetCreateNestedManyWithoutUserInput
   preferences?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
 }
 
@@ -522,7 +522,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   scheduleItems?: Prisma.ScheduleItemUncheckedCreateNestedManyWithoutUserInput
   pomodoroLogs?: Prisma.PomodoroSessionUncheckedCreateNestedManyWithoutUserInput
-  examTarget?: Prisma.ExamTargetUncheckedCreateNestedOneWithoutUserInput
+  examTargets?: Prisma.ExamTargetUncheckedCreateNestedManyWithoutUserInput
   preferences?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
 }
 
@@ -553,7 +553,7 @@ export type UserUpdateWithoutSessionsInput = {
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   scheduleItems?: Prisma.ScheduleItemUpdateManyWithoutUserNestedInput
   pomodoroLogs?: Prisma.PomodoroSessionUpdateManyWithoutUserNestedInput
-  examTarget?: Prisma.ExamTargetUpdateOneWithoutUserNestedInput
+  examTargets?: Prisma.ExamTargetUpdateManyWithoutUserNestedInput
   preferences?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
 }
 
@@ -568,7 +568,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   scheduleItems?: Prisma.ScheduleItemUncheckedUpdateManyWithoutUserNestedInput
   pomodoroLogs?: Prisma.PomodoroSessionUncheckedUpdateManyWithoutUserNestedInput
-  examTarget?: Prisma.ExamTargetUncheckedUpdateOneWithoutUserNestedInput
+  examTargets?: Prisma.ExamTargetUncheckedUpdateManyWithoutUserNestedInput
   preferences?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
 }
 
@@ -583,7 +583,7 @@ export type UserCreateWithoutAccountsInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   scheduleItems?: Prisma.ScheduleItemCreateNestedManyWithoutUserInput
   pomodoroLogs?: Prisma.PomodoroSessionCreateNestedManyWithoutUserInput
-  examTarget?: Prisma.ExamTargetCreateNestedOneWithoutUserInput
+  examTargets?: Prisma.ExamTargetCreateNestedManyWithoutUserInput
   preferences?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
 }
 
@@ -598,7 +598,7 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   scheduleItems?: Prisma.ScheduleItemUncheckedCreateNestedManyWithoutUserInput
   pomodoroLogs?: Prisma.PomodoroSessionUncheckedCreateNestedManyWithoutUserInput
-  examTarget?: Prisma.ExamTargetUncheckedCreateNestedOneWithoutUserInput
+  examTargets?: Prisma.ExamTargetUncheckedCreateNestedManyWithoutUserInput
   preferences?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
 }
 
@@ -629,7 +629,7 @@ export type UserUpdateWithoutAccountsInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   scheduleItems?: Prisma.ScheduleItemUpdateManyWithoutUserNestedInput
   pomodoroLogs?: Prisma.PomodoroSessionUpdateManyWithoutUserNestedInput
-  examTarget?: Prisma.ExamTargetUpdateOneWithoutUserNestedInput
+  examTargets?: Prisma.ExamTargetUpdateManyWithoutUserNestedInput
   preferences?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
 }
 
@@ -644,7 +644,7 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   scheduleItems?: Prisma.ScheduleItemUncheckedUpdateManyWithoutUserNestedInput
   pomodoroLogs?: Prisma.PomodoroSessionUncheckedUpdateManyWithoutUserNestedInput
-  examTarget?: Prisma.ExamTargetUncheckedUpdateOneWithoutUserNestedInput
+  examTargets?: Prisma.ExamTargetUncheckedUpdateManyWithoutUserNestedInput
   preferences?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
 }
 
@@ -659,7 +659,7 @@ export type UserCreateWithoutScheduleItemsInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   pomodoroLogs?: Prisma.PomodoroSessionCreateNestedManyWithoutUserInput
-  examTarget?: Prisma.ExamTargetCreateNestedOneWithoutUserInput
+  examTargets?: Prisma.ExamTargetCreateNestedManyWithoutUserInput
   preferences?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
 }
 
@@ -674,7 +674,7 @@ export type UserUncheckedCreateWithoutScheduleItemsInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   pomodoroLogs?: Prisma.PomodoroSessionUncheckedCreateNestedManyWithoutUserInput
-  examTarget?: Prisma.ExamTargetUncheckedCreateNestedOneWithoutUserInput
+  examTargets?: Prisma.ExamTargetUncheckedCreateNestedManyWithoutUserInput
   preferences?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
 }
 
@@ -705,7 +705,7 @@ export type UserUpdateWithoutScheduleItemsInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   pomodoroLogs?: Prisma.PomodoroSessionUpdateManyWithoutUserNestedInput
-  examTarget?: Prisma.ExamTargetUpdateOneWithoutUserNestedInput
+  examTargets?: Prisma.ExamTargetUpdateManyWithoutUserNestedInput
   preferences?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
 }
 
@@ -720,7 +720,7 @@ export type UserUncheckedUpdateWithoutScheduleItemsInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   pomodoroLogs?: Prisma.PomodoroSessionUncheckedUpdateManyWithoutUserNestedInput
-  examTarget?: Prisma.ExamTargetUncheckedUpdateOneWithoutUserNestedInput
+  examTargets?: Prisma.ExamTargetUncheckedUpdateManyWithoutUserNestedInput
   preferences?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
 }
 
@@ -735,7 +735,7 @@ export type UserCreateWithoutPomodoroLogsInput = {
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   scheduleItems?: Prisma.ScheduleItemCreateNestedManyWithoutUserInput
-  examTarget?: Prisma.ExamTargetCreateNestedOneWithoutUserInput
+  examTargets?: Prisma.ExamTargetCreateNestedManyWithoutUserInput
   preferences?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
 }
 
@@ -750,7 +750,7 @@ export type UserUncheckedCreateWithoutPomodoroLogsInput = {
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   scheduleItems?: Prisma.ScheduleItemUncheckedCreateNestedManyWithoutUserInput
-  examTarget?: Prisma.ExamTargetUncheckedCreateNestedOneWithoutUserInput
+  examTargets?: Prisma.ExamTargetUncheckedCreateNestedManyWithoutUserInput
   preferences?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
 }
 
@@ -781,7 +781,7 @@ export type UserUpdateWithoutPomodoroLogsInput = {
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   scheduleItems?: Prisma.ScheduleItemUpdateManyWithoutUserNestedInput
-  examTarget?: Prisma.ExamTargetUpdateOneWithoutUserNestedInput
+  examTargets?: Prisma.ExamTargetUpdateManyWithoutUserNestedInput
   preferences?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
 }
 
@@ -796,11 +796,11 @@ export type UserUncheckedUpdateWithoutPomodoroLogsInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   scheduleItems?: Prisma.ScheduleItemUncheckedUpdateManyWithoutUserNestedInput
-  examTarget?: Prisma.ExamTargetUncheckedUpdateOneWithoutUserNestedInput
+  examTargets?: Prisma.ExamTargetUncheckedUpdateManyWithoutUserNestedInput
   preferences?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
 }
 
-export type UserCreateWithoutExamTargetInput = {
+export type UserCreateWithoutExamTargetsInput = {
   id?: string
   name: string
   email: string
@@ -815,7 +815,7 @@ export type UserCreateWithoutExamTargetInput = {
   preferences?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutExamTargetInput = {
+export type UserUncheckedCreateWithoutExamTargetsInput = {
   id?: string
   name: string
   email: string
@@ -830,23 +830,23 @@ export type UserUncheckedCreateWithoutExamTargetInput = {
   preferences?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutExamTargetInput = {
+export type UserCreateOrConnectWithoutExamTargetsInput = {
   where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutExamTargetInput, Prisma.UserUncheckedCreateWithoutExamTargetInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutExamTargetsInput, Prisma.UserUncheckedCreateWithoutExamTargetsInput>
 }
 
-export type UserUpsertWithoutExamTargetInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutExamTargetInput, Prisma.UserUncheckedUpdateWithoutExamTargetInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutExamTargetInput, Prisma.UserUncheckedCreateWithoutExamTargetInput>
+export type UserUpsertWithoutExamTargetsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutExamTargetsInput, Prisma.UserUncheckedUpdateWithoutExamTargetsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutExamTargetsInput, Prisma.UserUncheckedCreateWithoutExamTargetsInput>
   where?: Prisma.UserWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutExamTargetInput = {
+export type UserUpdateToOneWithWhereWithoutExamTargetsInput = {
   where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutExamTargetInput, Prisma.UserUncheckedUpdateWithoutExamTargetInput>
+  data: Prisma.XOR<Prisma.UserUpdateWithoutExamTargetsInput, Prisma.UserUncheckedUpdateWithoutExamTargetsInput>
 }
 
-export type UserUpdateWithoutExamTargetInput = {
+export type UserUpdateWithoutExamTargetsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -861,7 +861,7 @@ export type UserUpdateWithoutExamTargetInput = {
   preferences?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutExamTargetInput = {
+export type UserUncheckedUpdateWithoutExamTargetsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
@@ -888,7 +888,7 @@ export type UserCreateWithoutPreferencesInput = {
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   scheduleItems?: Prisma.ScheduleItemCreateNestedManyWithoutUserInput
   pomodoroLogs?: Prisma.PomodoroSessionCreateNestedManyWithoutUserInput
-  examTarget?: Prisma.ExamTargetCreateNestedOneWithoutUserInput
+  examTargets?: Prisma.ExamTargetCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPreferencesInput = {
@@ -903,7 +903,7 @@ export type UserUncheckedCreateWithoutPreferencesInput = {
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   scheduleItems?: Prisma.ScheduleItemUncheckedCreateNestedManyWithoutUserInput
   pomodoroLogs?: Prisma.PomodoroSessionUncheckedCreateNestedManyWithoutUserInput
-  examTarget?: Prisma.ExamTargetUncheckedCreateNestedOneWithoutUserInput
+  examTargets?: Prisma.ExamTargetUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPreferencesInput = {
@@ -934,7 +934,7 @@ export type UserUpdateWithoutPreferencesInput = {
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   scheduleItems?: Prisma.ScheduleItemUpdateManyWithoutUserNestedInput
   pomodoroLogs?: Prisma.PomodoroSessionUpdateManyWithoutUserNestedInput
-  examTarget?: Prisma.ExamTargetUpdateOneWithoutUserNestedInput
+  examTargets?: Prisma.ExamTargetUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPreferencesInput = {
@@ -949,7 +949,7 @@ export type UserUncheckedUpdateWithoutPreferencesInput = {
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   scheduleItems?: Prisma.ScheduleItemUncheckedUpdateManyWithoutUserNestedInput
   pomodoroLogs?: Prisma.PomodoroSessionUncheckedUpdateManyWithoutUserNestedInput
-  examTarget?: Prisma.ExamTargetUncheckedUpdateOneWithoutUserNestedInput
+  examTargets?: Prisma.ExamTargetUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -962,6 +962,7 @@ export type UserCountOutputType = {
   accounts: number
   scheduleItems: number
   pomodoroLogs: number
+  examTargets: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -969,6 +970,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   accounts?: boolean | UserCountOutputTypeCountAccountsArgs
   scheduleItems?: boolean | UserCountOutputTypeCountScheduleItemsArgs
   pomodoroLogs?: boolean | UserCountOutputTypeCountPomodoroLogsArgs
+  examTargets?: boolean | UserCountOutputTypeCountExamTargetsArgs
 }
 
 /**
@@ -1009,6 +1011,13 @@ export type UserCountOutputTypeCountPomodoroLogsArgs<ExtArgs extends runtime.Typ
   where?: Prisma.PomodoroSessionWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountExamTargetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ExamTargetWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1022,7 +1031,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
   scheduleItems?: boolean | Prisma.User$scheduleItemsArgs<ExtArgs>
   pomodoroLogs?: boolean | Prisma.User$pomodoroLogsArgs<ExtArgs>
-  examTarget?: boolean | Prisma.User$examTargetArgs<ExtArgs>
+  examTargets?: boolean | Prisma.User$examTargetsArgs<ExtArgs>
   preferences?: boolean | Prisma.User$preferencesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
@@ -1063,7 +1072,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
   scheduleItems?: boolean | Prisma.User$scheduleItemsArgs<ExtArgs>
   pomodoroLogs?: boolean | Prisma.User$pomodoroLogsArgs<ExtArgs>
-  examTarget?: boolean | Prisma.User$examTargetArgs<ExtArgs>
+  examTargets?: boolean | Prisma.User$examTargetsArgs<ExtArgs>
   preferences?: boolean | Prisma.User$preferencesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -1077,7 +1086,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     accounts: Prisma.$AccountPayload<ExtArgs>[]
     scheduleItems: Prisma.$ScheduleItemPayload<ExtArgs>[]
     pomodoroLogs: Prisma.$PomodoroSessionPayload<ExtArgs>[]
-    examTarget: Prisma.$ExamTargetPayload<ExtArgs> | null
+    examTargets: Prisma.$ExamTargetPayload<ExtArgs>[]
     preferences: Prisma.$UserPreferencePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1486,7 +1495,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   accounts<T extends Prisma.User$accountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   scheduleItems<T extends Prisma.User$scheduleItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$scheduleItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ScheduleItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   pomodoroLogs<T extends Prisma.User$pomodoroLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$pomodoroLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PomodoroSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  examTarget<T extends Prisma.User$examTargetArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$examTargetArgs<ExtArgs>>): Prisma.Prisma__ExamTargetClient<runtime.Types.Result.GetResult<Prisma.$ExamTargetPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  examTargets<T extends Prisma.User$examTargetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$examTargetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExamTargetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   preferences<T extends Prisma.User$preferencesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$preferencesArgs<ExtArgs>>): Prisma.Prisma__UserPreferenceClient<runtime.Types.Result.GetResult<Prisma.$UserPreferencePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2013,9 +2022,9 @@ export type User$pomodoroLogsArgs<ExtArgs extends runtime.Types.Extensions.Inter
 }
 
 /**
- * User.examTarget
+ * User.examTargets
  */
-export type User$examTargetArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$examTargetsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the ExamTarget
    */
@@ -2029,6 +2038,11 @@ export type User$examTargetArgs<ExtArgs extends runtime.Types.Extensions.Interna
    */
   include?: Prisma.ExamTargetInclude<ExtArgs> | null
   where?: Prisma.ExamTargetWhereInput
+  orderBy?: Prisma.ExamTargetOrderByWithRelationInput | Prisma.ExamTargetOrderByWithRelationInput[]
+  cursor?: Prisma.ExamTargetWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ExamTargetScalarFieldEnum | Prisma.ExamTargetScalarFieldEnum[]
 }
 
 /**

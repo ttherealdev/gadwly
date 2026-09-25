@@ -2,6 +2,16 @@
   "app": {
     "name": "جدولي"
   },
+  "common": {
+    "deleteDialog": {
+      "title": "حذف",
+      "description": "هل أنت متأكد من حذف \"{label}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+      "descriptionGeneric": "هل أنت متأكد من حذف هذا العنصر؟ لا يمكن التراجع عن هذا الإجراء.",
+      "cancel": "إلغاء",
+      "confirm": "حذف",
+      "deleting": "جارٍ الحذف…"
+    }
+  },
   "nav": {
     "home": "الرئيسية",
     "schedule": "جدولي",
@@ -35,7 +45,12 @@
     "locating": "بنحدد موقعك...",
     "nextIn": "متبقي",
     "weeklyActivity": "نشاطك هذا الأسبوع",
-    "goToSchedule": "روح على جدولي"
+    "goToSchedule": "روح على جدولي",
+    "locationDenied": "تم رفض إذن الموقع. فعّله من إعدادات المتصفح وحاول مرة أخرى.",
+    "locationInsecure": "تحديد الموقع يحتاج اتصال HTTPS.",
+    "locationTimeout": "انتهت مهلة تحديد الموقع. حاول مرة أخرى.",
+    "fetchFailed": "تعذر جلب مواقيت الصلاة. تحقق من اتصالك بالإنترنت.",
+    "genericError": "حدث خطأ غير متوقع. حاول مرة أخرى."
   },
   "exam": {
     "today": "النهاردة!",
@@ -45,9 +60,20 @@
     "monthsMid": "باقي حوالي منتصف شهر {month}",
     "monthsLate": "باقي حوالي آخر شهر {month}",
     "dialogTitle": "معاد الامتحان",
+    "passed": "خلصت",
+    "dialogTitleAdd": "امتحان جديد",
+    "dialogTitleEdit": "تعديل الامتحان",
     "labelField": "اسم الامتحان",
-    "dateField": "التاريخ التقريبي",
-    "save": "حفظ"
+    "labelPlaceholder": "مثال: عربي، فيزياء...",
+    "dateField": "معاد الامتحان",
+    "save": "حفظ",
+    "delete": "حذف",
+    "deleteConfirm": "متأكد إنك عايز تحذف \"{label}\"؟",
+    "cancel": "إلغاء",
+    "unitDays": "يوم",
+    "unitHours": "ساعة",
+    "unitMinutes": "دقيقة",
+    "unitSeconds": "ثانية"
   },
   "months": {
     "1": "يناير",

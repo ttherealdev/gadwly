@@ -6,16 +6,34 @@ import {
   getBrowserLocation,
   nextPrayer,
   toMinutes,
+  LocationError,
+  PRAYER_SOUND_FILES,
+  type PrayerKey,
   type PrayerTimes,
 } from "@/lib/prayer-times";
 
+export type PrayerStatus =
+  | "idle"
+  | "locating"
+  | "ready"
+  | "denied"
+  | "insecure"
+  | "timeout"
+  | "fetch-failed"
+  | "error";
+
+const CACHE_KEY = "gadwly:lastCoords";
+const CACHE_MAX_AGE_MS = 1000 * 60 * 60 * 12; // 12h
+
 export function usePrayerTimes() {
   const [times, setTimes] = useState<PrayerTimes | null>(null);
-  const [status, setStatus] = useState<"idle" | "locating" | "ready" | "denied" | "error">("idle");
+  const [status, setStatus] = useState<PrayerStatus>("idle");
   const notifiedRef = useRef<Set<string>>(new Set());
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioRefs = useRef<Partial<Record<PrayerKey, HTMLAudioElement>>>({});
 
   async function enable() {
+    if (status === "locating") return;
+
     setStatus("locating");
     try {
       const pos = await getBrowserLocation();
@@ -23,36 +41,50 @@ export function usePrayerTimes() {
       setTimes(t);
       setStatus("ready");
       localStorage.setItem(
-        "gadwly:lastCoords",
+        CACHE_KEY,
         JSON.stringify({ lat: pos.coords.latitude, lon: pos.coords.longitude, at: Date.now() })
       );
-    } catch {
-      setStatus("denied");
+      if (typeof Notification !== "undefined" && Notification.permission === "default") {
+        Notification.requestPermission().catch(() => {});
+      }
+    } catch (err) {
+      if (err instanceof LocationError) {
+        setStatus(
+          err.kind === "unsupported" || err.kind === "unavailable" ? "error" : err.kind
+        );
+      } else {
+        console.error("[usePrayerTimes] unclassified failure:", err);
+        setStatus("error");
+      }
     }
   }
 
-  // Re-hydrate silently from a recent cached fix so the widget doesn't
-  // start empty on every visit.
   useEffect(() => {
-    const raw = localStorage.getItem("gadwly:lastCoords");
+    const raw = localStorage.getItem(CACHE_KEY);
     if (!raw) return;
     try {
       const { lat, lon, at } = JSON.parse(raw);
-      if (Date.now() - at < 1000 * 60 * 60 * 12) {
+      if (Date.now() - at < CACHE_MAX_AGE_MS) {
         fetchPrayerTimesByCoords(lat, lon)
           .then((t) => {
             setTimes(t);
             setStatus("ready");
           })
-          .catch(() => {});
+          .catch((err) => {
+            console.error("[usePrayerTimes] cache rehydrate failed:", err);
+          });
       }
     } catch {
-      /* ignore malformed cache */
+      /* ignore malformed cachee */
     }
   }, []);
 
-  // Every minute, check whether we just crossed a prayer time and, if so,
-  // play the adhan alert once per prayer per day.
+  useEffect(() => {
+    (Object.keys(PRAYER_SOUND_FILES) as PrayerKey[]).forEach((key) => {
+      audioRefs.current[key] = new Audio(PRAYER_SOUND_FILES[key]);
+    });
+  }, []);
+
   useEffect(() => {
     if (!times) return;
     const id = setInterval(() => {
@@ -60,11 +92,11 @@ export function usePrayerTimes() {
       const nowMin = now.getHours() * 60 + now.getMinutes();
       const dayKey = now.toDateString();
 
-      (Object.keys(times) as (keyof PrayerTimes)[]).forEach((key) => {
+      (Object.keys(times) as PrayerKey[]).forEach((key) => {
         const flag = `${dayKey}:${key}`;
         if (toMinutes(times[key]) === nowMin && !notifiedRef.current.has(flag)) {
           notifiedRef.current.add(flag);
-          audioRef.current?.play().catch(() => {});
+          audioRefs.current[key]?.play().catch(() => {});
           if (typeof Notification !== "undefined" && Notification.permission === "granted") {
             new Notification("حان موعد الأذان", { body: key });
           }
@@ -73,12 +105,6 @@ export function usePrayerTimes() {
     }, 30_000);
     return () => clearInterval(id);
   }, [times]);
-
-  useEffect(() => {
-    // Placeholder <audio> src — the user said they'll supply the actual
-    // adhan clip; drop it at /public/sounds/adhan.mp3 and this just works.
-    audioRef.current = new Audio("/sounds/adhan.mp3");
-  }, []);
 
   return {
     times,

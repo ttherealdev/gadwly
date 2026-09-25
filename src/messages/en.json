@@ -2,6 +2,16 @@
   "app": {
     "name": "Gadwly"
   },
+   "common": {
+    "deleteDialog": {
+      "title": "Delete",
+      "description": "Are you sure you want to delete “{label}”? This action can’t be undone.",
+      "descriptionGeneric": "Are you sure you want to delete this item? This action can’t be undone.",
+      "cancel": "Cancel",
+      "confirm": "Delete",
+      "deleting": "Deleting…"
+    }
+  },
   "nav": {
     "home": "Home",
     "schedule": "My Schedule",
@@ -35,7 +45,12 @@
     "locating": "Finding your location...",
     "nextIn": "Next in",
     "weeklyActivity": "Your activity this week",
-    "goToSchedule": "Go to my schedule"
+    "goToSchedule": "Go to my schedule",
+    "locationDenied": "Location permission denied. Enable it in your browser settings and try again.",
+    "locationInsecure": "Location requires an HTTPS connection.",
+    "locationTimeout": "Location request timed out. Try again.",
+    "fetchFailed": "Couldn't fetch prayer times. Check your connection.",
+    "genericError": "Something went wrong. Try again."
   },
   "exam": {
     "today": "Today!",
@@ -45,9 +60,20 @@
     "monthsMid": "About mid {month}",
     "monthsLate": "About late {month}",
     "dialogTitle": "Exam date",
+    "passed": "Passed",
+    "dialogTitleAdd": "New exam",
+    "dialogTitleEdit": "Edit exam",
     "labelField": "Exam name",
-    "dateField": "Approximate date",
-    "save": "Save"
+    "labelPlaceholder": "e.g. Arabic, Physics...",
+    "dateField": "Exam date",
+    "save": "Save",
+    "delete": "Delete",
+    "deleteConfirm": "Delete \"{label}\"?",
+    "cancel": "Cancel",
+    "unitDays": "days",
+    "unitHours": "hrs",
+    "unitMinutes": "min",
+    "unitSeconds": "sec"
   },
   "months": {
     "1": "January",

@@ -23,7 +23,7 @@ model User {
 
   scheduleItems ScheduleItem[]
   pomodoroLogs  PomodoroSession[]
-  examTarget    ExamTarget?
+  examTargets   ExamTarget[]
   preferences   UserPreference?
 
   @@map("user")
@@ -131,7 +131,7 @@ model PomodoroSession {
 
 model ExamTarget {
   id         String   @id @default(cuid())
-  userId     String   @unique
+  userId     String
   label      String // like final or exxam anything
   targetDate DateTime
   createdAt  DateTime @default(now())
@@ -139,6 +139,7 @@ model ExamTarget {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId])
   @@map("exam_target")
 }
 

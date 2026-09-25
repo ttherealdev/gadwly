@@ -13,7 +13,6 @@ import { useTranslations } from "next-intl";
 import {
   CalendarDays,
   CalendarRange,
-  Check,
   Crosshair,
   Maximize2,
   Minimize2,
@@ -24,7 +23,7 @@ import {
 import { cn } from "@/lib/utils";
 import { toMinutes } from "@/lib/prayer-times";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { DAYS, CATEGORY_VAR, type Day, type ScheduleItemDTO } from "./constants";
+import { DAYS, CATEGORY_VAR, STATUS_META, type Day, type ScheduleItemDTO } from "./constants";
 
 type Mode = "week" | "day";
 type Seg = { item: ScheduleItemDTO; start: number; end: number };
@@ -97,6 +96,7 @@ function dragRange(a: number, b: number) {
   return [start, end] as const;
 }
 
+/* ------------------------------------------------------------------ */
 
 export function ScheduleGridView({
   items,
@@ -125,15 +125,19 @@ export function ScheduleGridView({
 
   const headerH = mode === "week" ? WEEK_HEADER_H : 0;
 
+  // Latest values for the imperative handlers (wheel / touch) that live outside React's render.
   const live = useRef({ ppm, headerH, mode });
   useLayoutEffect(() => {
     live.current = { ppm, headerH, mode };
   });
 
   const nowMin = now ? now.getHours() * 60 + now.getMinutes() : null;
+  // DAYS starts on Saturday (see the screenshot), so JS getDay() (Sun = 0) maps like this.
   const todayIdx = now ? (now.getDay() + 1) % 7 : -1;
 
+  /* ---------- data ---------- */
 
+  // Overnight items are split so the part after midnight shows up on the next day.
   const segmentsByDay = useMemo(() => {
     const map: Record<string, Seg[]> = {};
     for (const d of DAYS) map[d] = [];
@@ -164,6 +168,7 @@ export function ScheduleGridView({
     [items],
   );
 
+  /* ---------- init: saved preferences, today, mobile default ---------- */
 
   useEffect(() => {
     let saved: { mode?: Mode; ppm?: number; fit?: boolean } = {};
@@ -196,6 +201,7 @@ export function ScheduleGridView({
     return () => clearInterval(id);
   }, []);
 
+  /* ---------- zoom (keeps the time under your finger / cursor fixed) ---------- */
 
   const zoomTo = useCallback((next: number, clientY?: number) => {
     const el = scrollRef.current;
@@ -292,6 +298,7 @@ export function ScheduleGridView({
     };
   }, [expanded, zoomTo, stepDay]);
 
+  /* ---------- expanded (full-screen) view ---------- */
 
   useEffect(() => {
     if (!expanded) return;
@@ -310,6 +317,7 @@ export function ScheduleGridView({
     };
   }, [expanded]);
 
+  /* ---------- initial scroll: land on "now" (or the first task), not at midnight ---------- */
 
   useEffect(() => {
     scrolledRef.current = false;
@@ -334,6 +342,7 @@ export function ScheduleGridView({
     chipRefs.current[dayIdx]?.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" });
   }, [dayIdx, mode, expanded]);
 
+  /* ---------- actions ---------- */
 
   const addAt = useCallback(
     (day: Day, a: number, b: number) => onAddAt(day, clock(a), clock(b)),
@@ -353,6 +362,7 @@ export function ScheduleGridView({
     addAt(day, start, Math.min(start + 60, DAY_MIN));
   }
 
+  /* ---------- derived layout ---------- */
 
   const hourPx = ppm * 60;
   const step = hourPx >= 34 ? 1 : hourPx >= 20 ? 2 : 3; // hours between labels
@@ -374,6 +384,7 @@ export function ScheduleGridView({
   const pill =
     "inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg border border-border bg-card px-3 text-xs font-bold text-foreground transition-colors hover:bg-secondary";
 
+  /* ---------- UI ---------- */
 
   const surface = (
     <div className="flex h-full min-h-0 flex-col">
@@ -617,6 +628,7 @@ export function ScheduleGridView({
   return <div className="h-[calc(100dvh-14rem)] min-h-[460px]">{surface}</div>;
 }
 
+/* ------------------------------------------------------------------ */
 
 function IconButton({
   label: text,
@@ -648,6 +660,7 @@ function IconButton({
   );
 }
 
+/* ------------------------------------------------------------------ */
 
 function DayColumn({
   day,
@@ -789,6 +802,8 @@ function DayColumn({
 
       {laid.map(({ seg, lane, lanes }) => {
         const { item } = seg;
+        const meta = STATUS_META[item.status];
+        const StatusIcon = meta.icon;
         const height = Math.max((seg.end - seg.start) * ppm - 2, 18);
         const widthPct = 100 / lanes;
         const color = CATEGORY_VAR[item.category];
@@ -820,9 +835,11 @@ function DayColumn({
             />
             <span className="relative flex h-full flex-col gap-0.5 px-1.5 py-1">
               <span className="flex items-center gap-1">
-                {done && <Check className="size-3 shrink-0 text-accent-green" />}
+                {item.status === "DONE" && (
+                  <StatusIcon className={cn("size-3 shrink-0", meta.textClass)} />
+                )}
                 {item.status === "IN_PROGRESS" && (
-                  <span className="size-1.5 shrink-0 animate-pulse rounded-full bg-accent-green" />
+                  <span className={cn("size-1.5 shrink-0 animate-pulse rounded-full", meta.dotClass)} />
                 )}
                 <span
                   className={cn(

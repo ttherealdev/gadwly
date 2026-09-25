@@ -205,16 +205,16 @@ export type ExamTargetOrderByWithRelationInput = {
 
 export type ExamTargetWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  userId?: string
   AND?: Prisma.ExamTargetWhereInput | Prisma.ExamTargetWhereInput[]
   OR?: Prisma.ExamTargetWhereInput[]
   NOT?: Prisma.ExamTargetWhereInput | Prisma.ExamTargetWhereInput[]
+  userId?: Prisma.StringFilter<"ExamTarget"> | string
   label?: Prisma.StringFilter<"ExamTarget"> | string
   targetDate?: Prisma.DateTimeFilter<"ExamTarget"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"ExamTarget"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ExamTarget"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-}, "id" | "userId">
+}, "id">
 
 export type ExamTargetOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -246,7 +246,7 @@ export type ExamTargetCreateInput = {
   targetDate: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutExamTargetInput
+  user: Prisma.UserCreateNestedOneWithoutExamTargetsInput
 }
 
 export type ExamTargetUncheckedCreateInput = {
@@ -264,7 +264,7 @@ export type ExamTargetUpdateInput = {
   targetDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutExamTargetNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutExamTargetsNestedInput
 }
 
 export type ExamTargetUncheckedUpdateInput = {
@@ -302,9 +302,14 @@ export type ExamTargetUncheckedUpdateManyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type ExamTargetNullableScalarRelationFilter = {
-  is?: Prisma.ExamTargetWhereInput | null
-  isNot?: Prisma.ExamTargetWhereInput | null
+export type ExamTargetListRelationFilter = {
+  every?: Prisma.ExamTargetWhereInput
+  some?: Prisma.ExamTargetWhereInput
+  none?: Prisma.ExamTargetWhereInput
+}
+
+export type ExamTargetOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type ExamTargetCountOrderByAggregateInput = {
@@ -334,36 +339,46 @@ export type ExamTargetMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
-export type ExamTargetCreateNestedOneWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.ExamTargetCreateWithoutUserInput, Prisma.ExamTargetUncheckedCreateWithoutUserInput>
-  connectOrCreate?: Prisma.ExamTargetCreateOrConnectWithoutUserInput
-  connect?: Prisma.ExamTargetWhereUniqueInput
+export type ExamTargetCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.ExamTargetCreateWithoutUserInput, Prisma.ExamTargetUncheckedCreateWithoutUserInput> | Prisma.ExamTargetCreateWithoutUserInput[] | Prisma.ExamTargetUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.ExamTargetCreateOrConnectWithoutUserInput | Prisma.ExamTargetCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.ExamTargetCreateManyUserInputEnvelope
+  connect?: Prisma.ExamTargetWhereUniqueInput | Prisma.ExamTargetWhereUniqueInput[]
 }
 
-export type ExamTargetUncheckedCreateNestedOneWithoutUserInput = {
-  create?: Prisma.XOR<Prisma.ExamTargetCreateWithoutUserInput, Prisma.ExamTargetUncheckedCreateWithoutUserInput>
-  connectOrCreate?: Prisma.ExamTargetCreateOrConnectWithoutUserInput
-  connect?: Prisma.ExamTargetWhereUniqueInput
+export type ExamTargetUncheckedCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.ExamTargetCreateWithoutUserInput, Prisma.ExamTargetUncheckedCreateWithoutUserInput> | Prisma.ExamTargetCreateWithoutUserInput[] | Prisma.ExamTargetUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.ExamTargetCreateOrConnectWithoutUserInput | Prisma.ExamTargetCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.ExamTargetCreateManyUserInputEnvelope
+  connect?: Prisma.ExamTargetWhereUniqueInput | Prisma.ExamTargetWhereUniqueInput[]
 }
 
-export type ExamTargetUpdateOneWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.ExamTargetCreateWithoutUserInput, Prisma.ExamTargetUncheckedCreateWithoutUserInput>
-  connectOrCreate?: Prisma.ExamTargetCreateOrConnectWithoutUserInput
-  upsert?: Prisma.ExamTargetUpsertWithoutUserInput
-  disconnect?: Prisma.ExamTargetWhereInput | boolean
-  delete?: Prisma.ExamTargetWhereInput | boolean
-  connect?: Prisma.ExamTargetWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.ExamTargetUpdateToOneWithWhereWithoutUserInput, Prisma.ExamTargetUpdateWithoutUserInput>, Prisma.ExamTargetUncheckedUpdateWithoutUserInput>
+export type ExamTargetUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.ExamTargetCreateWithoutUserInput, Prisma.ExamTargetUncheckedCreateWithoutUserInput> | Prisma.ExamTargetCreateWithoutUserInput[] | Prisma.ExamTargetUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.ExamTargetCreateOrConnectWithoutUserInput | Prisma.ExamTargetCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.ExamTargetUpsertWithWhereUniqueWithoutUserInput | Prisma.ExamTargetUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.ExamTargetCreateManyUserInputEnvelope
+  set?: Prisma.ExamTargetWhereUniqueInput | Prisma.ExamTargetWhereUniqueInput[]
+  disconnect?: Prisma.ExamTargetWhereUniqueInput | Prisma.ExamTargetWhereUniqueInput[]
+  delete?: Prisma.ExamTargetWhereUniqueInput | Prisma.ExamTargetWhereUniqueInput[]
+  connect?: Prisma.ExamTargetWhereUniqueInput | Prisma.ExamTargetWhereUniqueInput[]
+  update?: Prisma.ExamTargetUpdateWithWhereUniqueWithoutUserInput | Prisma.ExamTargetUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.ExamTargetUpdateManyWithWhereWithoutUserInput | Prisma.ExamTargetUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.ExamTargetScalarWhereInput | Prisma.ExamTargetScalarWhereInput[]
 }
 
-export type ExamTargetUncheckedUpdateOneWithoutUserNestedInput = {
-  create?: Prisma.XOR<Prisma.ExamTargetCreateWithoutUserInput, Prisma.ExamTargetUncheckedCreateWithoutUserInput>
-  connectOrCreate?: Prisma.ExamTargetCreateOrConnectWithoutUserInput
-  upsert?: Prisma.ExamTargetUpsertWithoutUserInput
-  disconnect?: Prisma.ExamTargetWhereInput | boolean
-  delete?: Prisma.ExamTargetWhereInput | boolean
-  connect?: Prisma.ExamTargetWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.ExamTargetUpdateToOneWithWhereWithoutUserInput, Prisma.ExamTargetUpdateWithoutUserInput>, Prisma.ExamTargetUncheckedUpdateWithoutUserInput>
+export type ExamTargetUncheckedUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.ExamTargetCreateWithoutUserInput, Prisma.ExamTargetUncheckedCreateWithoutUserInput> | Prisma.ExamTargetCreateWithoutUserInput[] | Prisma.ExamTargetUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.ExamTargetCreateOrConnectWithoutUserInput | Prisma.ExamTargetCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.ExamTargetUpsertWithWhereUniqueWithoutUserInput | Prisma.ExamTargetUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.ExamTargetCreateManyUserInputEnvelope
+  set?: Prisma.ExamTargetWhereUniqueInput | Prisma.ExamTargetWhereUniqueInput[]
+  disconnect?: Prisma.ExamTargetWhereUniqueInput | Prisma.ExamTargetWhereUniqueInput[]
+  delete?: Prisma.ExamTargetWhereUniqueInput | Prisma.ExamTargetWhereUniqueInput[]
+  connect?: Prisma.ExamTargetWhereUniqueInput | Prisma.ExamTargetWhereUniqueInput[]
+  update?: Prisma.ExamTargetUpdateWithWhereUniqueWithoutUserInput | Prisma.ExamTargetUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.ExamTargetUpdateManyWithWhereWithoutUserInput | Prisma.ExamTargetUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.ExamTargetScalarWhereInput | Prisma.ExamTargetScalarWhereInput[]
 }
 
 export type ExamTargetCreateWithoutUserInput = {
@@ -387,15 +402,45 @@ export type ExamTargetCreateOrConnectWithoutUserInput = {
   create: Prisma.XOR<Prisma.ExamTargetCreateWithoutUserInput, Prisma.ExamTargetUncheckedCreateWithoutUserInput>
 }
 
-export type ExamTargetUpsertWithoutUserInput = {
-  update: Prisma.XOR<Prisma.ExamTargetUpdateWithoutUserInput, Prisma.ExamTargetUncheckedUpdateWithoutUserInput>
-  create: Prisma.XOR<Prisma.ExamTargetCreateWithoutUserInput, Prisma.ExamTargetUncheckedCreateWithoutUserInput>
-  where?: Prisma.ExamTargetWhereInput
+export type ExamTargetCreateManyUserInputEnvelope = {
+  data: Prisma.ExamTargetCreateManyUserInput | Prisma.ExamTargetCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
-export type ExamTargetUpdateToOneWithWhereWithoutUserInput = {
-  where?: Prisma.ExamTargetWhereInput
+export type ExamTargetUpsertWithWhereUniqueWithoutUserInput = {
+  where: Prisma.ExamTargetWhereUniqueInput
+  update: Prisma.XOR<Prisma.ExamTargetUpdateWithoutUserInput, Prisma.ExamTargetUncheckedUpdateWithoutUserInput>
+  create: Prisma.XOR<Prisma.ExamTargetCreateWithoutUserInput, Prisma.ExamTargetUncheckedCreateWithoutUserInput>
+}
+
+export type ExamTargetUpdateWithWhereUniqueWithoutUserInput = {
+  where: Prisma.ExamTargetWhereUniqueInput
   data: Prisma.XOR<Prisma.ExamTargetUpdateWithoutUserInput, Prisma.ExamTargetUncheckedUpdateWithoutUserInput>
+}
+
+export type ExamTargetUpdateManyWithWhereWithoutUserInput = {
+  where: Prisma.ExamTargetScalarWhereInput
+  data: Prisma.XOR<Prisma.ExamTargetUpdateManyMutationInput, Prisma.ExamTargetUncheckedUpdateManyWithoutUserInput>
+}
+
+export type ExamTargetScalarWhereInput = {
+  AND?: Prisma.ExamTargetScalarWhereInput | Prisma.ExamTargetScalarWhereInput[]
+  OR?: Prisma.ExamTargetScalarWhereInput[]
+  NOT?: Prisma.ExamTargetScalarWhereInput | Prisma.ExamTargetScalarWhereInput[]
+  id?: Prisma.StringFilter<"ExamTarget"> | string
+  userId?: Prisma.StringFilter<"ExamTarget"> | string
+  label?: Prisma.StringFilter<"ExamTarget"> | string
+  targetDate?: Prisma.DateTimeFilter<"ExamTarget"> | Date | string
+  createdAt?: Prisma.DateTimeFilter<"ExamTarget"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"ExamTarget"> | Date | string
+}
+
+export type ExamTargetCreateManyUserInput = {
+  id?: string
+  label: string
+  targetDate: Date | string
+  createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type ExamTargetUpdateWithoutUserInput = {
@@ -407,6 +452,14 @@ export type ExamTargetUpdateWithoutUserInput = {
 }
 
 export type ExamTargetUncheckedUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  label?: Prisma.StringFieldUpdateOperationsInput | string
+  targetDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ExamTargetUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
   targetDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string

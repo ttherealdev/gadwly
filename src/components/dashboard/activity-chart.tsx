@@ -20,7 +20,7 @@ export function ActivityChart({
   const t = useTranslations("dashboard");
 
   return (
-    <Card>
+    <Card className="rounded-[4px] border-none">
       <CardHeader>
         <CardTitle>{t("weeklyActivity")}</CardTitle>
       </CardHeader>

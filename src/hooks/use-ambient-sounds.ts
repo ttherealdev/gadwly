@@ -3,31 +3,40 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 /**
- * Ambient sounds generated with the Web Audio API, so there are no audio files to download,
- * no loop gap, and nothing that sounds like a compressed 10-second clip on repeat.
- *
- * Same API as before: { enabled, volume, toggle(name), setVolume(name, v) }
- * plus two additions: unlock() and chime().
+ * Ambient sounds generated with the Web Audio API so there r no audio files to download
+ * no loop gap, and nothing that sounds like a compressed 10-second clip on repeat. (current one)
  */
 
 export type SoundName = "rain" | "fire" | "noise";
 export const SOUND_NAMES: SoundName[] = ["rain", "fire", "noise"];
 
 const STORAGE_KEY = "gadwly:sound-volumes";
-const DEFAULT_VOLUME: Record<SoundName, number> = { rain: 60, fire: 55, noise: 40 };
-// Loudness trim per sound, so the same slider position feels equally loud across sounds.
+const DEFAULT_VOLUME: Record<SoundName, number> = {
+  rain: 60,
+  fire: 55,
+  noise: 40,
+};
 const TRIM: Record<SoundName, number> = { rain: 1, fire: 0.8, noise: 0.5 };
-const level = (name: SoundName, v: number) => TRIM[name] * Math.pow(v / 100, 1.7);
+const level = (name: SoundName, v: number) =>
+  TRIM[name] * Math.pow(v / 100, 1.7);
 
 /* ------------------------------------------------------------------ */
 /* Noise buffers                                                       */
 /* ------------------------------------------------------------------ */
 
 type NoiseKind = "white" | "pink" | "brown";
-export type Bufs = { white: AudioBuffer; pink: AudioBuffer; brown: AudioBuffer };
+export type Bufs = {
+  white: AudioBuffer;
+  pink: AudioBuffer;
+  brown: AudioBuffer;
+};
 
 /** Stereo noise that loops seamlessly (the tail is cross-faded into the head). */
-export function makeNoise(ctx: BaseAudioContext, kind: NoiseKind, seconds = 8): AudioBuffer {
+export function makeNoise(
+  ctx: BaseAudioContext,
+  kind: NoiseKind,
+  seconds = 8,
+): AudioBuffer {
   const rate = ctx.sampleRate;
   const len = Math.floor(rate * seconds);
   const fade = Math.floor(rate * 0.3);
@@ -35,7 +44,14 @@ export function makeNoise(ctx: BaseAudioContext, kind: NoiseKind, seconds = 8): 
 
   for (let c = 0; c < 2; c++) {
     const raw = new Float32Array(len + fade);
-    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0, last = 0;
+    let b0 = 0,
+      b1 = 0,
+      b2 = 0,
+      b3 = 0,
+      b4 = 0,
+      b5 = 0,
+      b6 = 0,
+      last = 0;
     for (let i = 0; i < raw.length; i++) {
       const w = Math.random() * 2 - 1;
       if (kind === "white") {
@@ -69,7 +85,10 @@ export function makeNoise(ctx: BaseAudioContext, kind: NoiseKind, seconds = 8): 
 /* ------------------------------------------------------------------ */
 
 type Voice = { stop: () => void };
-export type Sched = (ctx: BaseAudioContext, tick: (from: number, to: number) => void) => () => void;
+export type Sched = (
+  ctx: BaseAudioContext,
+  tick: (from: number, to: number) => void,
+) => () => void;
 
 /** Schedules audio events ~1.5s ahead, so sound keeps going even when the tab's timers are throttled. */
 export const startScheduler: Sched = (ctx, tick) => {
@@ -89,7 +108,12 @@ export const startScheduler: Sched = (ctx, tick) => {
 const rand = (min: number, max: number) => min + Math.random() * (max - min);
 const expo = (mean: number) => -Math.log(1 - Math.random()) * mean;
 
-function filter(ctx: BaseAudioContext, type: BiquadFilterType, freq: number, q = 0.7) {
+function filter(
+  ctx: BaseAudioContext,
+  type: BiquadFilterType,
+  freq: number,
+  q = 0.7,
+) {
   const f = ctx.createBiquadFilter();
   f.type = type;
   f.frequency.value = freq;
@@ -109,7 +133,14 @@ function burst(
   out: AudioNode,
   white: AudioBuffer,
   t: number,
-  o: { dur: number; peak: number; band: number; q: number; high?: number; attack?: number },
+  o: {
+    dur: number;
+    peak: number;
+    band: number;
+    q: number;
+    high?: number;
+    attack?: number;
+  },
 ) {
   const s = ctx.createBufferSource();
   s.buffer = white;
@@ -132,7 +163,11 @@ function burst(
 }
 
 /** Looping source, started at a random offset so layers never line up. */
-function loopSource(ctx: BaseAudioContext, buf: AudioBuffer, stops: (() => void)[]) {
+function loopSource(
+  ctx: BaseAudioContext,
+  buf: AudioBuffer,
+  stops: (() => void)[],
+) {
   const s = ctx.createBufferSource();
   s.buffer = buf;
   s.loop = true;
@@ -174,10 +209,14 @@ function wobble(
 /* Voices                                                              */
 /* ------------------------------------------------------------------ */
 
-export function buildRain(ctx: BaseAudioContext, out: AudioNode, bufs: Bufs, sched: Sched = startScheduler): Voice {
+export function buildRain(
+  ctx: BaseAudioContext,
+  out: AudioNode,
+  bufs: Bufs,
+  sched: Sched = startScheduler,
+): Voice {
   const stops: (() => void)[] = [];
 
-  // the wash of thousands of drops
   const hissGain = ctx.createGain();
   hissGain.gain.value = 0.5;
   loopSource(ctx, bufs.pink, stops)
@@ -187,7 +226,6 @@ export function buildRain(ctx: BaseAudioContext, out: AudioNode, bufs: Bufs, sch
     .connect(out);
   wobble(ctx, 0.11, 0.09, hissGain.gain, stops);
 
-  // low patter on the ground
   const bodyGain = ctx.createGain();
   bodyGain.gain.value = 0.3;
   loopSource(ctx, bufs.brown, stops)
@@ -196,7 +234,6 @@ export function buildRain(ctx: BaseAudioContext, out: AudioNode, bufs: Bufs, sch
     .connect(out);
   wobble(ctx, 0.07, 0.06, bodyGain.gain, stops);
 
-  // individual drops (about 30 per second, spread across the stereo field)
   let next = 0;
   stops.push(
     sched(ctx, (from, to) => {
@@ -216,10 +253,14 @@ export function buildRain(ctx: BaseAudioContext, out: AudioNode, bufs: Bufs, sch
   return { stop: () => stops.forEach((s) => s()) };
 }
 
-export function buildFire(ctx: BaseAudioContext, out: AudioNode, bufs: Bufs, sched: Sched = startScheduler): Voice {
+export function buildFire(
+  ctx: BaseAudioContext,
+  out: AudioNode,
+  bufs: Bufs,
+  sched: Sched = startScheduler,
+): Voice {
   const stops: (() => void)[] = [];
 
-  // deep rumble of the flames
   const rumble = ctx.createGain();
   rumble.gain.value = 0.8;
   loopSource(ctx, bufs.brown, stops)
@@ -230,7 +271,10 @@ export function buildFire(ctx: BaseAudioContext, out: AudioNode, bufs: Bufs, sch
   // the mid "whoosh"
   const body = ctx.createGain();
   body.gain.value = 0.1;
-  loopSource(ctx, bufs.pink, stops).connect(filter(ctx, "bandpass", 700, 0.7)).connect(body).connect(out);
+  loopSource(ctx, bufs.pink, stops)
+    .connect(filter(ctx, "bandpass", 700, 0.7))
+    .connect(body)
+    .connect(out);
   wobble(ctx, 0.23, 0.05, body.gain, stops);
 
   // random pops, sometimes in little clusters, now and then a loud snap
@@ -246,7 +290,8 @@ export function buildFire(ctx: BaseAudioContext, out: AudioNode, bufs: Bufs, sch
           nextWobble = next + rand(0.6, 1.4);
         }
         const big = Math.random() < 0.08;
-        const cluster = Math.random() < 0.25 ? 2 + Math.floor(Math.random() * 3) : 1;
+        const cluster =
+          Math.random() < 0.25 ? 2 + Math.floor(Math.random() * 3) : 1;
         for (let k = 0; k < cluster; k++) {
           const isBig = big && k === 0;
           burst(ctx, out, bufs.white, next + k * rand(0.012, 0.04), {
@@ -266,14 +311,24 @@ export function buildFire(ctx: BaseAudioContext, out: AudioNode, bufs: Bufs, sch
   return { stop: () => stops.forEach((s) => s()) };
 }
 
-export function buildNoise(ctx: BaseAudioContext, out: AudioNode, bufs: Bufs): Voice {
+export function buildNoise(
+  ctx: BaseAudioContext,
+  out: AudioNode,
+  bufs: Bufs,
+): Voice {
   const stops: (() => void)[] = [];
-  loopSource(ctx, bufs.brown, stops).connect(filter(ctx, "lowpass", 1400, 0.5)).connect(out);
+  loopSource(ctx, bufs.brown, stops)
+    .connect(filter(ctx, "lowpass", 1400, 0.5))
+    .connect(out);
   return { stop: () => stops.forEach((s) => s()) };
 }
 
 /** A soft three-note rising chime that rings out: pleasant, not an alarm. */
-export function playChime(ctx: BaseAudioContext, out: AudioNode, at = ctx.currentTime + 0.03) {
+export function playChime(
+  ctx: BaseAudioContext,
+  out: AudioNode,
+  at = ctx.currentTime + 0.03,
+) {
   const notes = [659.25, 830.61, 987.77, 1318.51]; // E5 G#5 B5 E6
   notes.forEach((freq, i) => {
     const t = at + i * 0.17;
@@ -295,7 +350,10 @@ export function playChime(ctx: BaseAudioContext, out: AudioNode, at = ctx.curren
   });
 }
 
-const BUILDERS: Record<SoundName, (ctx: BaseAudioContext, out: AudioNode, bufs: Bufs) => Voice> = {
+const BUILDERS: Record<
+  SoundName,
+  (ctx: BaseAudioContext, out: AudioNode, bufs: Bufs) => Voice
+> = {
   rain: (c, o, b) => buildRain(c, o, b),
   fire: (c, o, b) => buildFire(c, o, b),
   noise: (c, o, b) => buildNoise(c, o, b),
@@ -305,7 +363,11 @@ const BUILDERS: Record<SoundName, (ctx: BaseAudioContext, out: AudioNode, bufs: 
 /* Hook                                                                */
 /* ------------------------------------------------------------------ */
 
-type Entry = { gain: GainNode; voice: Voice; kill?: ReturnType<typeof setTimeout> };
+type Entry = {
+  gain: GainNode;
+  voice: Voice;
+  kill?: ReturnType<typeof setTimeout>;
+};
 
 export function useAmbientSounds() {
   const [enabled, setEnabled] = useState<Record<SoundName, boolean>>({
@@ -313,7 +375,8 @@ export function useAmbientSounds() {
     fire: false,
     noise: false,
   });
-  const [volume, setVolumeState] = useState<Record<SoundName, number>>(DEFAULT_VOLUME);
+  const [volume, setVolumeState] =
+    useState<Record<SoundName, number>>(DEFAULT_VOLUME);
   const [loaded, setLoaded] = useState(false);
 
   const ctxRef = useRef<AudioContext | null>(null);
@@ -324,7 +387,9 @@ export function useAmbientSounds() {
   const unlock = useCallback(() => {
     if (!ctxRef.current) {
       const Ctor: typeof AudioContext =
-        window.AudioContext ?? (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+        window.AudioContext ??
+        (window as unknown as { webkitAudioContext: typeof AudioContext })
+          .webkitAudioContext;
       ctxRef.current = new Ctor();
     }
     if (ctxRef.current.state === "suspended") void ctxRef.current.resume();
@@ -338,7 +403,8 @@ export function useAmbientSounds() {
       setVolumeState((v) => {
         const next = { ...v };
         for (const n of SOUND_NAMES) {
-          if (typeof saved?.[n] === "number") next[n] = Math.min(100, Math.max(0, saved[n]));
+          if (typeof saved?.[n] === "number")
+            next[n] = Math.min(100, Math.max(0, saved[n]));
         }
         return next;
       });
