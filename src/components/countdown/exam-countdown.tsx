@@ -85,7 +85,7 @@ export function ExamCountdown() {
   }
 
   function save() {
-    if (!label.trim() || !date) return;
+    if (!label.trim() || !date || upsert.isPending) return;
     upsert.mutate({
       id: editing?.id,
       label: label.trim(),
@@ -226,9 +226,9 @@ export function ExamCountdown() {
             <Button
               variant="green"
               onClick={save}
-              disabled={!label.trim() || !date}
+              disabled={!label.trim() || !date || upsert.isPending}
             >
-              {te("save")}
+              {upsert.isPending ? te("saving") : te("save")}
             </Button>
           </DialogFooter>
         </DialogContent>
