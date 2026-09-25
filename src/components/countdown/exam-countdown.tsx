@@ -22,8 +22,6 @@ type Parts = { days: number; hours: number; minutes: number; seconds: number };
 
 const EMPTY_EXAMS: ExamDTO[] = [];
 
-
-
 function diffParts(target: Date, now: Date): Parts | null {
   const ms = target.getTime() - now.getTime();
   if (ms <= 0) return null;
@@ -88,11 +86,15 @@ export function ExamCountdown() {
 
   function save() {
     if (!label.trim() || !date) return;
-    upsert.mutate({ id: editing?.id, label: label.trim(), targetDate: new Date(date) });
+    upsert.mutate({
+      id: editing?.id,
+      label: label.trim(),
+      targetDate: new Date(date),
+    });
   }
 
   return (
-    <Card className="rounded-[4px] border-none">
+    <Card className="rounded-[4px] border-none min-w-0">
       <CardHeader className="flex-row items-center gap-2">
         <CardTitle className="flex items-center gap-2">
           <GraduationCap className="h-4 w-4 text-primary" />
@@ -120,17 +122,25 @@ export function ExamCountdown() {
             </Button>
           </div>
         ) : (
-          <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          // after
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(13rem,15rem))] gap-3">
             {exams.map((exam) => {
               const parts = diffParts(new Date(exam.targetDate), now);
-              const isToday = parts && parts.days === 0 && parts.hours === 0 && parts.minutes < 1;
+              const isToday =
+                parts &&
+                parts.days === 0 &&
+                parts.hours === 0 &&
+                parts.minutes < 1;
               return (
                 <div
                   key={exam.id}
-                  className="w-52 shrink-0 rounded-[4px] border border-border p-3"
+                  className="min-w-0 rounded-[4px] border border-border p-3"
                 >
                   <div className="flex items-start justify-between gap-1">
-                    <p className="min-w-0 truncate text-sm font-bold" title={exam.label}>
+                    <p
+                      className="min-w-0 truncate text-sm font-bold"
+                      title={exam.label}
+                    >
                       {exam.label}
                     </p>
                     <div className="flex shrink-0 gap-0.5">
@@ -156,15 +166,25 @@ export function ExamCountdown() {
                   </div>
 
                   {!parts ? (
-                    <p className="mt-3 text-sm font-bold text-muted-foreground">{te("passed")}</p>
+                    <p className="mt-3 text-sm font-bold text-muted-foreground">
+                      {te("passed")}
+                    </p>
                   ) : isToday ? (
-                    <p className="mt-3 text-lg font-extrabold text-primary">{te("today")}</p>
+                    <p className="mt-3 text-lg font-extrabold text-primary">
+                      {te("today")}
+                    </p>
                   ) : (
                     <div className="mt-3 grid grid-cols-4 gap-1" dir="ltr">
                       <TimeUnit value={parts.days} unit={te("unitDays")} />
                       <TimeUnit value={parts.hours} unit={te("unitHours")} />
-                      <TimeUnit value={parts.minutes} unit={te("unitMinutes")} />
-                      <TimeUnit value={parts.seconds} unit={te("unitSeconds")} />
+                      <TimeUnit
+                        value={parts.minutes}
+                        unit={te("unitMinutes")}
+                      />
+                      <TimeUnit
+                        value={parts.seconds}
+                        unit={te("unitSeconds")}
+                      />
                     </div>
                   )}
                 </div>
@@ -177,7 +197,9 @@ export function ExamCountdown() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{editing ? te("dialogTitleEdit") : te("dialogTitleAdd")}</DialogTitle>
+            <DialogTitle>
+              {editing ? te("dialogTitleEdit") : te("dialogTitleAdd")}
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-3">
             <div className="space-y-1.5">
@@ -190,21 +212,32 @@ export function ExamCountdown() {
             </div>
             <div className="space-y-1.5">
               <Label>{te("dateField")}</Label>
-              <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+              <Input
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+              />
             </div>
           </div>
           <DialogFooter>
             <Button variant="secondary" onClick={() => setOpen(false)}>
               {te("cancel")}
             </Button>
-            <Button variant="green" onClick={save} disabled={!label.trim() || !date}>
+            <Button
+              variant="green"
+              onClick={save}
+              disabled={!label.trim() || !date}
+            >
               {te("save")}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      <Dialog open={!!confirmDelete} onOpenChange={(v) => !v && setConfirmDelete(null)}>
+      <Dialog
+        open={!!confirmDelete}
+        onOpenChange={(v) => !v && setConfirmDelete(null)}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{te("delete")}</DialogTitle>
@@ -235,8 +268,12 @@ export function ExamCountdown() {
 function TimeUnit({ value, unit }: { value: number; unit: string }) {
   return (
     <div className="flex flex-col items-center rounded-[4px] bg-muted py-1.5">
-      <span className="text-base font-extrabold tabular-nums">{pad(value)}</span>
-      <span className="text-[9px] font-medium text-muted-foreground">{unit}</span>
+      <span className="text-base font-extrabold tabular-nums">
+        {pad(value)}
+      </span>
+      <span className="text-[9px] font-medium text-muted-foreground">
+        {unit}
+      </span>
     </div>
   );
 }
