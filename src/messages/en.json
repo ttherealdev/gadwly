@@ -2,7 +2,7 @@
   "app": {
     "name": "Gadwly"
   },
-   "common": {
+  "common": {
     "deleteDialog": {
       "title": "Delete",
       "description": "Are you sure you want to delete “{label}”? This action can’t be undone.",
@@ -61,6 +61,7 @@
     "monthsLate": "About late {month}",
     "dialogTitle": "Exam date",
     "passed": "Passed",
+    "errorDuplicate": "An exam with this name and date already exists",
     "dialogTitleAdd": "New exam",
     "dialogTitleEdit": "Edit exam",
     "labelField": "Exam name",
@@ -153,6 +154,8 @@
       "notes": "Notes",
       "cancel": "Cancel",
       "save": "Save activity",
+      "saving": "Saving…",
+      "errorDuplicate": "A matching task already exists at this time",
       "delete": "Delete"
     },
     "empty": "No activities yet — add your first one.",

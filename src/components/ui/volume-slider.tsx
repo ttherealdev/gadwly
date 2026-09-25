@@ -2,15 +2,11 @@ import type { ComponentProps, CSSProperties } from "react";
 import { cn } from "@/lib/utils";
 
 type Props = Omit<ComponentProps<"input">, "type" | "value" | "onChange"> & {
-  /** 0-100 */
   value: number;
   onValueChange: (value: number) => void;
 };
 
-/**
- * Native <input type="range"> on purpose: keyboard, screen readers, touch and
- * RTL direction all come from the browser. Styling lives in volume-slider.css.
- */
+
 export function VolumeSlider({
   value,
   onValueChange,
@@ -32,5 +28,5 @@ export function VolumeSlider({
       style={{ ...style, "--p": value / 100 } as CSSProperties}
     />
   );
-  
+
 }

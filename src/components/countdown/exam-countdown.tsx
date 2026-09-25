@@ -46,29 +46,38 @@ export function ExamCountdown() {
   const now = useTick();
   const savingRef = useRef(false);
   const utils = trpc.useUtils();
-  const upsert = trpc.exams.upsert.useMutation({
-    onSuccess: () => {
-      utils.exams.list.invalidate();
-      setOpen(false);
-    },
-    onSettled: () => {
-      savingRef.current = false;
-    },
-  });
-  const remove = trpc.exams.delete.useMutation({
-    onSuccess: () => utils.exams.list.invalidate(),
-  });
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<ExamDTO | null>(null);
   const [label, setLabel] = useState("");
   const [date, setDate] = useState("");
   const [confirmDelete, setConfirmDelete] = useState<ExamDTO | null>(null);
+  const [pendingId, setPendingId] = useState<string | null>(null);
+
+  const upsert = trpc.exams.upsert.useMutation({
+    onSuccess: () => {
+      utils.exams.list.invalidate();
+      setOpen(false);
+      setErrorMsg(null);
+    },
+    onError: (err) =>
+  setErrorMsg(err.message === "DUPLICATE_EXAM" ? te("errorDuplicate") : err.message),
+    onSettled: () => {
+      savingRef.current = false;
+    },
+  });
+  const remove = trpc.exams.delete.useMutation({
+    onSuccess: () => utils.exams.list.invalidate(),
+    onError: (err) =>
+  setErrorMsg(err.message === "DUPLICATE_EXAM" ? te("errorDuplicate") : err.message),
+  });
 
   function openAdd() {
     setEditing(null);
     setLabel("");
     setDate("");
+    setPendingId(crypto.randomUUID());
     setOpen(true);
   }
 
@@ -76,14 +85,15 @@ export function ExamCountdown() {
     setEditing(exam);
     setLabel(exam.label);
     setDate(new Date(exam.targetDate).toISOString().slice(0, 10));
+    setPendingId(exam.id);
     setOpen(true);
   }
 
   function save() {
-    if (!label.trim() || !date || savingRef.current) return;
+    if (!label.trim() || !date || savingRef.current || !pendingId) return;
     savingRef.current = true;
     upsert.mutate({
-      id: editing?.id,
+      id: pendingId,
       label: label.trim(),
       targetDate: new Date(date),
     });
@@ -197,6 +207,7 @@ export function ExamCountdown() {
               {editing ? te("dialogTitleEdit") : te("dialogTitleAdd")}
             </DialogTitle>
           </DialogHeader>
+          {errorMsg && <p className="text-sm text-destructive">{errorMsg}</p>}
           <div className="space-y-3">
             <div className="space-y-1.5">
               <Label>{te("labelField")}</Label>

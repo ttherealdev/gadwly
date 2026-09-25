@@ -259,6 +259,7 @@ export type ScheduleItemOrderByWithRelationInput = {
 
 export type ScheduleItemWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  id_userId?: Prisma.ScheduleItemIdUserIdCompoundUniqueInput
   AND?: Prisma.ScheduleItemWhereInput | Prisma.ScheduleItemWhereInput[]
   OR?: Prisma.ScheduleItemWhereInput[]
   NOT?: Prisma.ScheduleItemWhereInput | Prisma.ScheduleItemWhereInput[]
@@ -274,7 +275,7 @@ export type ScheduleItemWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"ScheduleItem"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ScheduleItem"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-}, "id">
+}, "id" | "id_userId">
 
 export type ScheduleItemOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -424,6 +425,11 @@ export type ScheduleItemListRelationFilter = {
 
 export type ScheduleItemOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type ScheduleItemIdUserIdCompoundUniqueInput = {
+  id: string
+  userId: string
 }
 
 export type ScheduleItemCountOrderByAggregateInput = {

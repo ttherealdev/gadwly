@@ -5,7 +5,14 @@ import { useLocale, useTranslations } from "next-intl";
 import { Pencil, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+} from "@/components/ui/table";
 import { cn, formatDuration } from "@/lib/utils";
 import { CATEGORY_DOT, STATUS_META, type ScheduleItemDTO } from "./constants";
 import { DeleteDialog } from "./delete-dialog";
@@ -50,10 +57,16 @@ export function ScheduleListView({
   const td = useTranslations("days");
   const tc = useTranslations("schedule.category");
   const locale = useLocale() as "ar" | "en";
-  const [pendingDelete, setPendingDelete] = useState<ScheduleItemDTO | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<ScheduleItemDTO | null>(
+    null,
+  );
 
   if (items.length === 0) {
-    return <p className="py-12 text-center text-sm text-muted-foreground">{t("empty")}</p>;
+    return (
+      <p className="py-12 text-center text-sm text-muted-foreground">
+        {t("empty")}
+      </p>
+    );
   }
 
   return (
@@ -77,12 +90,20 @@ export function ScheduleListView({
             {items.map((item) => (
               <TableRow key={item.id}>
                 <TableCell className="font-semibold">{td(item.day)}</TableCell>
-                <TableCell className="max-w-48 truncate font-semibold" title={item.title}>
+                <TableCell
+                  className="max-w-48 truncate font-semibold"
+                  title={item.title}
+                >
                   {item.title}
                 </TableCell>
                 <TableCell>
                   <Badge variant="outline" className="gap-1.5">
-                    <span className={cn("size-2 shrink-0 rounded-full", CATEGORY_DOT[item.category])} />
+                    <span
+                      className={cn(
+                        "size-2 shrink-0 rounded-full",
+                        CATEGORY_DOT[item.category],
+                      )}
+                    />
                     {tc(item.category)}
                   </Badge>
                 </TableCell>
@@ -96,11 +117,19 @@ export function ScheduleListView({
                   {formatDuration(item.startTime, item.endTime, locale)}
                 </TableCell>
                 <TableCell>
-                  <StatusPill status={item.status} onClick={() => onCycleStatus(item)} />
+                  <StatusPill
+                    status={item.status}
+                    onClick={() => onCycleStatus(item)}
+                  />
                 </TableCell>
                 <TableCell>
                   <div className="flex justify-end gap-1">
-                    <Button size="icon" variant="ghost" onClick={() => onEdit(item)} aria-label={t("table.actions")}>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => onEdit(item)}
+                      aria-label={t("table.actions")}
+                    >
                       <Pencil className="size-4" />
                     </Button>
                     <Button
@@ -123,33 +152,61 @@ export function ScheduleListView({
       {/* Mobile: stacked cards */}
       <div className="flex flex-col gap-2.5 sm:hidden">
         {items.map((item) => (
-          <div key={item.id} className="isolate rounded-xl border border-border p-3">
+          <div
+            key={item.id}
+            className="isolate rounded-xl border border-border p-3"
+          >
             <div className="flex items-start gap-2">
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-bold" title={item.title}>
                   {item.title}
                 </p>
-                <p className="mt-0.5 truncate text-xs text-muted-foreground">{td(item.day)}</p>
+                <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                  {td(item.day)}
+                </p>
               </div>
-              <Badge variant="outline" className="shrink-0 gap-1.5 whitespace-nowrap">
-                <span className={cn("size-2 shrink-0 rounded-full", CATEGORY_DOT[item.category])} />
+              <Badge
+                variant="outline"
+                className="shrink-0 gap-1.5 whitespace-nowrap"
+              >
+                <span
+                  className={cn(
+                    "size-2 shrink-0 rounded-full",
+                    CATEGORY_DOT[item.category],
+                  )}
+                />
                 {tc(item.category)}
               </Badge>
             </div>
 
             <div className="mt-2.5 flex items-center gap-2 text-sm" dir="ltr">
-              <span className="font-semibold tabular-nums text-primary">{item.startTime}</span>
+              <span className="font-semibold tabular-nums text-primary">
+                {item.startTime}
+              </span>
               <span className="text-muted-foreground">–</span>
-              <span className="font-semibold tabular-nums text-destructive">{item.endTime}</span>
-              <span className="ms-auto text-xs tabular-nums text-muted-foreground" dir={locale === "ar" ? "rtl" : "ltr"}>
+              <span className="font-semibold tabular-nums text-destructive">
+                {item.endTime}
+              </span>
+              <span
+                className="ms-auto text-xs tabular-nums text-muted-foreground"
+                dir={locale === "ar" ? "rtl" : "ltr"}
+              >
                 {formatDuration(item.startTime, item.endTime, locale)}
               </span>
             </div>
 
             <div className="mt-3 flex items-center justify-between gap-2 border-t border-border pt-2.5">
-              <StatusPill status={item.status} onClick={() => onCycleStatus(item)} />
+              <StatusPill
+                status={item.status}
+                onClick={() => onCycleStatus(item)}
+              />
               <div className="flex shrink-0 gap-1">
-                <Button size="icon" variant="ghost" onClick={() => onEdit(item)} aria-label={t("table.actions")}>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => onEdit(item)}
+                  aria-label={t("table.actions")}
+                >
                   <Pencil className="size-4" />
                 </Button>
                 <Button

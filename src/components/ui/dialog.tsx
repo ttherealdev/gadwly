@@ -37,7 +37,7 @@ function DialogDescription({ className, ...props }: React.ComponentProps<typeof 
   return <DialogPrimitive.Description className={cn("text-sm text-muted-foreground", className)} {...props} />;
 }
 function DialogFooter({ className, ...props }: React.ComponentProps<"div">) {
-  return <div className={cn("mt-5 flex justify-end gap-2", className)} {...props} />;
+  return <div className={cn("mt-5 flex justify-end  gap-2", className)} {...props} />;
 }
 
 export { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter };

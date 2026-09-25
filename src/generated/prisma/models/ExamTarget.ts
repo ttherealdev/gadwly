@@ -28,6 +28,7 @@ export type ExamTargetMinAggregateOutputType = {
   id: string | null
   userId: string | null
   label: string | null
+  labelKey: string | null
   targetDate: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -37,6 +38,7 @@ export type ExamTargetMaxAggregateOutputType = {
   id: string | null
   userId: string | null
   label: string | null
+  labelKey: string | null
   targetDate: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -46,6 +48,7 @@ export type ExamTargetCountAggregateOutputType = {
   id: number
   userId: number
   label: number
+  labelKey: number
   targetDate: number
   createdAt: number
   updatedAt: number
@@ -57,6 +60,7 @@ export type ExamTargetMinAggregateInputType = {
   id?: true
   userId?: true
   label?: true
+  labelKey?: true
   targetDate?: true
   createdAt?: true
   updatedAt?: true
@@ -66,6 +70,7 @@ export type ExamTargetMaxAggregateInputType = {
   id?: true
   userId?: true
   label?: true
+  labelKey?: true
   targetDate?: true
   createdAt?: true
   updatedAt?: true
@@ -75,6 +80,7 @@ export type ExamTargetCountAggregateInputType = {
   id?: true
   userId?: true
   label?: true
+  labelKey?: true
   targetDate?: true
   createdAt?: true
   updatedAt?: true
@@ -157,6 +163,7 @@ export type ExamTargetGroupByOutputType = {
   id: string
   userId: string
   label: string
+  labelKey: string
   targetDate: Date
   createdAt: Date
   updatedAt: Date
@@ -187,6 +194,7 @@ export type ExamTargetWhereInput = {
   id?: Prisma.StringFilter<"ExamTarget"> | string
   userId?: Prisma.StringFilter<"ExamTarget"> | string
   label?: Prisma.StringFilter<"ExamTarget"> | string
+  labelKey?: Prisma.StringFilter<"ExamTarget"> | string
   targetDate?: Prisma.DateTimeFilter<"ExamTarget"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"ExamTarget"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ExamTarget"> | Date | string
@@ -197,6 +205,7 @@ export type ExamTargetOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   label?: Prisma.SortOrder
+  labelKey?: Prisma.SortOrder
   targetDate?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -205,21 +214,25 @@ export type ExamTargetOrderByWithRelationInput = {
 
 export type ExamTargetWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  id_userId?: Prisma.ExamTargetIdUserIdCompoundUniqueInput
+  userId_labelKey_targetDate?: Prisma.ExamTargetUserIdLabelKeyTargetDateCompoundUniqueInput
   AND?: Prisma.ExamTargetWhereInput | Prisma.ExamTargetWhereInput[]
   OR?: Prisma.ExamTargetWhereInput[]
   NOT?: Prisma.ExamTargetWhereInput | Prisma.ExamTargetWhereInput[]
   userId?: Prisma.StringFilter<"ExamTarget"> | string
   label?: Prisma.StringFilter<"ExamTarget"> | string
+  labelKey?: Prisma.StringFilter<"ExamTarget"> | string
   targetDate?: Prisma.DateTimeFilter<"ExamTarget"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"ExamTarget"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ExamTarget"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-}, "id">
+}, "id" | "id_userId" | "userId_labelKey_targetDate">
 
 export type ExamTargetOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   label?: Prisma.SortOrder
+  labelKey?: Prisma.SortOrder
   targetDate?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -235,6 +248,7 @@ export type ExamTargetScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"ExamTarget"> | string
   userId?: Prisma.StringWithAggregatesFilter<"ExamTarget"> | string
   label?: Prisma.StringWithAggregatesFilter<"ExamTarget"> | string
+  labelKey?: Prisma.StringWithAggregatesFilter<"ExamTarget"> | string
   targetDate?: Prisma.DateTimeWithAggregatesFilter<"ExamTarget"> | Date | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ExamTarget"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ExamTarget"> | Date | string
@@ -243,6 +257,7 @@ export type ExamTargetScalarWhereWithAggregatesInput = {
 export type ExamTargetCreateInput = {
   id?: string
   label: string
+  labelKey: string
   targetDate: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -253,6 +268,7 @@ export type ExamTargetUncheckedCreateInput = {
   id?: string
   userId: string
   label: string
+  labelKey: string
   targetDate: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -261,6 +277,7 @@ export type ExamTargetUncheckedCreateInput = {
 export type ExamTargetUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
+  labelKey?: Prisma.StringFieldUpdateOperationsInput | string
   targetDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -271,6 +288,7 @@ export type ExamTargetUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
+  labelKey?: Prisma.StringFieldUpdateOperationsInput | string
   targetDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -280,6 +298,7 @@ export type ExamTargetCreateManyInput = {
   id?: string
   userId: string
   label: string
+  labelKey: string
   targetDate: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -288,6 +307,7 @@ export type ExamTargetCreateManyInput = {
 export type ExamTargetUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
+  labelKey?: Prisma.StringFieldUpdateOperationsInput | string
   targetDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -297,6 +317,7 @@ export type ExamTargetUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
+  labelKey?: Prisma.StringFieldUpdateOperationsInput | string
   targetDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -312,10 +333,22 @@ export type ExamTargetOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type ExamTargetIdUserIdCompoundUniqueInput = {
+  id: string
+  userId: string
+}
+
+export type ExamTargetUserIdLabelKeyTargetDateCompoundUniqueInput = {
+  userId: string
+  labelKey: string
+  targetDate: Date | string
+}
+
 export type ExamTargetCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   label?: Prisma.SortOrder
+  labelKey?: Prisma.SortOrder
   targetDate?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -325,6 +358,7 @@ export type ExamTargetMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   label?: Prisma.SortOrder
+  labelKey?: Prisma.SortOrder
   targetDate?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -334,6 +368,7 @@ export type ExamTargetMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   label?: Prisma.SortOrder
+  labelKey?: Prisma.SortOrder
   targetDate?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -384,6 +419,7 @@ export type ExamTargetUncheckedUpdateManyWithoutUserNestedInput = {
 export type ExamTargetCreateWithoutUserInput = {
   id?: string
   label: string
+  labelKey: string
   targetDate: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -392,6 +428,7 @@ export type ExamTargetCreateWithoutUserInput = {
 export type ExamTargetUncheckedCreateWithoutUserInput = {
   id?: string
   label: string
+  labelKey: string
   targetDate: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -430,6 +467,7 @@ export type ExamTargetScalarWhereInput = {
   id?: Prisma.StringFilter<"ExamTarget"> | string
   userId?: Prisma.StringFilter<"ExamTarget"> | string
   label?: Prisma.StringFilter<"ExamTarget"> | string
+  labelKey?: Prisma.StringFilter<"ExamTarget"> | string
   targetDate?: Prisma.DateTimeFilter<"ExamTarget"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"ExamTarget"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ExamTarget"> | Date | string
@@ -438,6 +476,7 @@ export type ExamTargetScalarWhereInput = {
 export type ExamTargetCreateManyUserInput = {
   id?: string
   label: string
+  labelKey: string
   targetDate: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -446,6 +485,7 @@ export type ExamTargetCreateManyUserInput = {
 export type ExamTargetUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
+  labelKey?: Prisma.StringFieldUpdateOperationsInput | string
   targetDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -454,6 +494,7 @@ export type ExamTargetUpdateWithoutUserInput = {
 export type ExamTargetUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
+  labelKey?: Prisma.StringFieldUpdateOperationsInput | string
   targetDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -462,6 +503,7 @@ export type ExamTargetUncheckedUpdateWithoutUserInput = {
 export type ExamTargetUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
+  labelKey?: Prisma.StringFieldUpdateOperationsInput | string
   targetDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -473,6 +515,7 @@ export type ExamTargetSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   id?: boolean
   userId?: boolean
   label?: boolean
+  labelKey?: boolean
   targetDate?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -483,6 +526,7 @@ export type ExamTargetSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   id?: boolean
   userId?: boolean
   label?: boolean
+  labelKey?: boolean
   targetDate?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -493,6 +537,7 @@ export type ExamTargetSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   id?: boolean
   userId?: boolean
   label?: boolean
+  labelKey?: boolean
   targetDate?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -503,12 +548,13 @@ export type ExamTargetSelectScalar = {
   id?: boolean
   userId?: boolean
   label?: boolean
+  labelKey?: boolean
   targetDate?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ExamTargetOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "label" | "targetDate" | "createdAt" | "updatedAt", ExtArgs["result"]["examTarget"]>
+export type ExamTargetOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "label" | "labelKey" | "targetDate" | "createdAt" | "updatedAt", ExtArgs["result"]["examTarget"]>
 export type ExamTargetInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -528,6 +574,7 @@ export type $ExamTargetPayload<ExtArgs extends runtime.Types.Extensions.Internal
     id: string
     userId: string
     label: string
+    labelKey: string
     targetDate: Date
     createdAt: Date
     updatedAt: Date
@@ -958,6 +1005,7 @@ export interface ExamTargetFieldRefs {
   readonly id: Prisma.FieldRef<"ExamTarget", 'String'>
   readonly userId: Prisma.FieldRef<"ExamTarget", 'String'>
   readonly label: Prisma.FieldRef<"ExamTarget", 'String'>
+  readonly labelKey: Prisma.FieldRef<"ExamTarget", 'String'>
   readonly targetDate: Prisma.FieldRef<"ExamTarget", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"ExamTarget", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ExamTarget", 'DateTime'>

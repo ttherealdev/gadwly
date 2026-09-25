@@ -171,6 +171,7 @@ export const ExamTargetScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   label: 'label',
+  labelKey: 'labelKey',
   targetDate: 'targetDate',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

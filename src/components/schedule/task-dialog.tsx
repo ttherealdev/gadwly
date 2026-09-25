@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
@@ -13,6 +13,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { trpc } from "@/lib/trpc";
 import { DAYS, CATEGORIES, type Day, type Category, type ScheduleItemDTO } from "./constants";
 
+
 export function TaskDialog({
   open,
   onOpenChange,
@@ -22,18 +23,26 @@ export function TaskDialog({
   open: boolean;
   onOpenChange: (v: boolean) => void;
   item: ScheduleItemDTO | null;
-  /** Used by the grid view: clicking an empty slot opens "add" pre-filled. */
   prefill?: { day: Day; startTime: string; endTime: string };
 }) {
   const t = useTranslations("schedule");
   const td = useTranslations("days");
   const tc = useTranslations("schedule.category");
   const utils = trpc.useUtils();
+  const savingRef = useRef(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [pendingId, setPendingId] = useState<string | null>(null);
 
   const upsert = trpc.schedule.upsert.useMutation({
     onSuccess: () => {
       utils.schedule.list.invalidate();
       onOpenChange(false);
+      setErrorMsg(null);
+    },
+    onError: (err) =>
+      setErrorMsg(err.message === "DUPLICATE_TASK" ? t("form.errorDuplicate") : err.message),
+    onSettled: () => {
+      savingRef.current = false;
     },
   });
 
@@ -44,7 +53,7 @@ export function TaskDialog({
   const [endTime, setEndTime] = useState("11:00");
   const [notes, setNotes] = useState("");
 
-  useEffect(() => {
+    useEffect(() => {
     if (item) {
       setDay(item.day);
       setTitle(item.title);
@@ -52,6 +61,7 @@ export function TaskDialog({
       setStartTime(item.startTime);
       setEndTime(item.endTime);
       setNotes(item.notes ?? "");
+      setPendingId(item.id);
     } else {
       setDay(prefill?.day ?? "SAT");
       setTitle("");
@@ -59,13 +69,16 @@ export function TaskDialog({
       setStartTime(prefill?.startTime ?? "09:00");
       setEndTime(prefill?.endTime ?? "11:00");
       setNotes("");
+      setPendingId(crypto.randomUUID());
     }
+    setErrorMsg(null);
   }, [item, open, prefill]);
 
   function save() {
-    if (!title.trim()) return;
+    if (!title.trim() || savingRef.current || !pendingId) return;
+    savingRef.current = true;
     upsert.mutate({
-      id: item?.id,
+      id: pendingId,
       day,
       title: title.trim(),
       category,
@@ -78,9 +91,11 @@ export function TaskDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
-        <DialogHeader>
+         <DialogHeader>
           <DialogTitle>{item ? t("editTask") : t("addTask")}</DialogTitle>
         </DialogHeader>
+
+        {errorMsg && <p className="text-sm text-destructive">{errorMsg}</p>}
 
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
@@ -128,7 +143,9 @@ export function TaskDialog({
 
         <DialogFooter>
           <Button variant="secondary" onClick={() => onOpenChange(false)}>{t("form.cancel")}</Button>
-          <Button variant="green" onClick={save}>{t("form.save")}</Button>
+          <Button variant="green" onClick={save} disabled={!title.trim() || upsert.isPending}>
+            {upsert.isPending ? t("form.saving") : t("form.save")}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -116,15 +116,7 @@ export function PomodoroTimer() {
   const utils = trpc.useUtils();
   const { data: todayCount = 0 } = trpc.pomodoro.todayCount.useQuery();
   const start = trpc.pomodoro.start.useMutation({
-    onSuccess: (s) => {
-      sessionIdRef.current = s.id;
-      // The session was persisted without an id (server round trip wasn't
-      // back yet) — patch it in now so a refresh right after starting can
-      // still resume/finish the correct server-side row.
-      if (persistedRef.current.session) {
-        savePersisted({ session: { ...persistedRef.current.session, sessionId: s.id } });
-      }
-    },
+    onError: (err) => console.error("[pomodoro] start failed:", err),
   });
   const finish = trpc.pomodoro.finish.useMutation({
     onSuccess: () => utils.pomodoro.todayCount.invalidate(),
@@ -145,15 +137,23 @@ export function PomodoroTimer() {
     try {
       const raw = localStorage.getItem(PREFS_KEY);
       const p: Partial<Persisted> = raw ? JSON.parse(raw) : {};
-      const focus = typeof p.focusMin === "number" ? clampInt(p.focusMin, 1, 180) : 25;
-      const brk = typeof p.breakMin === "number" ? clampInt(p.breakMin, 1, 60) : 5;
+      const focus =
+        typeof p.focusMin === "number" ? clampInt(p.focusMin, 1, 180) : 25;
+      const brk =
+        typeof p.breakMin === "number" ? clampInt(p.breakMin, 1, 60) : 5;
       const chime = typeof p.chime === "boolean" ? p.chime : true;
       const restoredMode: Mode = p.mode === "break" ? "break" : "focus";
 
       setFocusMin(focus);
       setBreakMin(brk);
       setChimeOn(chime);
-      persistedRef.current = { focusMin: focus, breakMin: brk, chime, mode: restoredMode, session: null };
+      persistedRef.current = {
+        focusMin: focus,
+        breakMin: brk,
+        chime,
+        mode: restoredMode,
+        session: null,
+      };
 
       const s = p.session;
       if (s && s.running && typeof s.endAt === "number") {
@@ -180,7 +180,9 @@ export function PomodoroTimer() {
         setMode(s.mode);
         setLabel(s.label ?? "");
         sessionIdRef.current = s.sessionId ?? null;
-        setSecondsLeft(s.secondsLeft ?? (s.mode === "focus" ? focus : brk) * 60);
+        setSecondsLeft(
+          s.secondsLeft ?? (s.mode === "focus" ? focus : brk) * 60,
+        );
         setStarted(true);
         setRunning(false);
         persistedRef.current.session = s;
@@ -280,7 +282,10 @@ export function PomodoroTimer() {
     if (running) {
       let remaining = secondsLeft;
       if (endAtRef.current !== null) {
-        remaining = Math.max(0, Math.ceil((endAtRef.current - Date.now()) / 1000));
+        remaining = Math.max(
+          0,
+          Math.ceil((endAtRef.current - Date.now()) / 1000),
+        );
         setSecondsLeft(remaining);
       }
       endAtRef.current = null;
@@ -298,7 +303,13 @@ export function PomodoroTimer() {
       return;
     }
     if (mode === "focus" && !sessionIdRef.current) {
-      start.mutate({ label: label || undefined, focusMin, breakMin });
+      sessionIdRef.current = crypto.randomUUID();
+      start.mutate({
+        id: sessionIdRef.current,
+        label: label || undefined,
+        focusMin,
+        breakMin,
+      });
     }
     const endAt = Date.now() + secondsLeft * 1000;
     endAtRef.current = endAt;

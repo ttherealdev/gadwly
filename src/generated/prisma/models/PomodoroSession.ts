@@ -261,6 +261,7 @@ export type PomodoroSessionOrderByWithRelationInput = {
 
 export type PomodoroSessionWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  id_userId?: Prisma.PomodoroSessionIdUserIdCompoundUniqueInput
   AND?: Prisma.PomodoroSessionWhereInput | Prisma.PomodoroSessionWhereInput[]
   OR?: Prisma.PomodoroSessionWhereInput[]
   NOT?: Prisma.PomodoroSessionWhereInput | Prisma.PomodoroSessionWhereInput[]
@@ -272,7 +273,7 @@ export type PomodoroSessionWhereUniqueInput = Prisma.AtLeast<{
   startedAt?: Prisma.DateTimeFilter<"PomodoroSession"> | Date | string
   endedAt?: Prisma.DateTimeNullableFilter<"PomodoroSession"> | Date | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-}, "id">
+}, "id" | "id_userId">
 
 export type PomodoroSessionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -388,6 +389,11 @@ export type PomodoroSessionListRelationFilter = {
 
 export type PomodoroSessionOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type PomodoroSessionIdUserIdCompoundUniqueInput = {
+  id: string
+  userId: string
 }
 
 export type PomodoroSessionCountOrderByAggregateInput = {

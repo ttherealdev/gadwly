@@ -87,17 +87,11 @@ export function ScheduleTable() {
         </div>
       </CardHeader>
 
-      {/*
-        A day filter with 8 options (ALL + 7 days) doesn't fit one line on mobile.
-        TabsList has a fixed height, so letting it `flex-wrap` made the second row
-        of chips float on top of the content below instead of pushing it down —
-        that's the overlap in the screenshot. A single non-wrapping scroll row
-        has no fixed-height ceiling to break, and scrolls instead of overlapping.
-      */}
+
       {view === "list" && (
         <div
           role="tablist"
-          aria-label={t("table.day")}
+          aria-label={t("table.day")} 
           className="-mx-1 flex gap-1.5 overflow-x-auto px-6 pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {(["ALL", ...DAYS] as const).map((d) => {

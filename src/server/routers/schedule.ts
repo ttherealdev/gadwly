@@ -1,14 +1,14 @@
 import { z } from "zod";
 import { protectedProcedure, router } from "../trpc";
+import { toTRPCError } from "../../lib/trpc-errors";
 
 const categoryEnum = z.enum(["CENTER", "STUDY", "PROJECT", "SPORT", "REST"]);
 const dayEnum = z.enum(["SAT", "SUN", "MON", "TUE", "WED", "THU", "FRI"]);
 const statusEnum = z.enum(["PLANNED", "IN_PROGRESS", "DONE"]);
-
 const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
 const upsertInput = z.object({
-  id: z.string().optional(),
+  id: z.string().uuid(),
   day: dayEnum,
   title: z.string().min(1).max(120),
   category: categoryEnum,
@@ -27,33 +27,41 @@ export const scheduleRouter = router({
     })
   ),
 
-  upsert: protectedProcedure.input(upsertInput).mutation(({ ctx, input }) => {
+  upsert: protectedProcedure.input(upsertInput).mutation(async ({ ctx, input }) => {
     const { id, ...data } = input;
-    if (id) {
-      return ctx.db.scheduleItem.update({
-        where: { id, userId: ctx.session.user.id },
-        data,
+    try {
+      return await ctx.db.scheduleItem.upsert({
+        where: { id_userId: { id, userId: ctx.session.user.id } },
+        create: { id, ...data, userId: ctx.session.user.id },
+        update: data,
       });
+    } catch (e) {
+      throw toTRPCError(e);
     }
-    return ctx.db.scheduleItem.create({
-      data: { ...data, userId: ctx.session.user.id },
-    });
   }),
 
   updateStatus: protectedProcedure
     .input(z.object({ id: z.string(), status: statusEnum }))
-    .mutation(({ ctx, input }) =>
-      ctx.db.scheduleItem.update({
-        where: { id: input.id, userId: ctx.session.user.id },
-        data: { status: input.status },
-      })
-    ),
+    .mutation(async ({ ctx, input }) => {
+      try {
+        return await ctx.db.scheduleItem.update({
+          where: { id_userId: { id: input.id, userId: ctx.session.user.id } },
+          data: { status: input.status },
+        });
+      } catch (e) {
+        throw toTRPCError(e);
+      }
+    }),
 
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
-    .mutation(({ ctx, input }) =>
-      ctx.db.scheduleItem.delete({
-        where: { id: input.id, userId: ctx.session.user.id },
-      })
-    ),
+    .mutation(async ({ ctx, input }) => {
+      try {
+        return await ctx.db.scheduleItem.delete({
+          where: { id_userId: { id: input.id, userId: ctx.session.user.id } },
+        });
+      } catch (e) {
+        throw toTRPCError(e);
+      }
+    }),
 });
