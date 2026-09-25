@@ -67,6 +67,7 @@
     "labelPlaceholder": "مثال: عربي، فيزياء...",
     "dateField": "معاد الامتحان",
     "save": "حفظ",
+    "saving": "جارٍ الحفظ…",
     "delete": "حذف",
     "deleteConfirm": "متأكد إنك عايز تحذف \"{label}\"؟",
     "cancel": "إلغاء",

@@ -67,6 +67,7 @@
     "labelPlaceholder": "e.g. Arabic, Physics...",
     "dateField": "Exam date",
     "save": "Save",
+    "saving": "Saving…",
     "delete": "Delete",
     "deleteConfirm": "Delete \"{label}\"?",
     "cancel": "Cancel",
