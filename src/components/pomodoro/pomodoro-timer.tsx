@@ -118,7 +118,9 @@ export function PomodoroTimer() {
     onSuccess: (s) => {
       sessionIdRef.current = s.id;
       if (persistedRef.current.session) {
-        savePersisted({ session: { ...persistedRef.current.session, sessionId: s.id } });
+        savePersisted({
+          session: { ...persistedRef.current.session, sessionId: s.id },
+        });
       }
     },
   });
@@ -139,15 +141,23 @@ export function PomodoroTimer() {
     try {
       const raw = localStorage.getItem(PREFS_KEY);
       const p: Partial<Persisted> = raw ? JSON.parse(raw) : {};
-      const focus = typeof p.focusMin === "number" ? clampInt(p.focusMin, 1, 180) : 25;
-      const brk = typeof p.breakMin === "number" ? clampInt(p.breakMin, 1, 60) : 5;
+      const focus =
+        typeof p.focusMin === "number" ? clampInt(p.focusMin, 1, 180) : 25;
+      const brk =
+        typeof p.breakMin === "number" ? clampInt(p.breakMin, 1, 60) : 5;
       const chime = typeof p.chime === "boolean" ? p.chime : true;
       const restoredMode: Mode = p.mode === "break" ? "break" : "focus";
 
       setFocusMin(focus);
       setBreakMin(brk);
       setChimeOn(chime);
-      persistedRef.current = { focusMin: focus, breakMin: brk, chime, mode: restoredMode, session: null };
+      persistedRef.current = {
+        focusMin: focus,
+        breakMin: brk,
+        chime,
+        mode: restoredMode,
+        session: null,
+      };
 
       const s = p.session;
       if (s && s.running && typeof s.endAt === "number") {
@@ -171,7 +181,9 @@ export function PomodoroTimer() {
         setMode(s.mode);
         setLabel(s.label ?? "");
         sessionIdRef.current = s.sessionId ?? null;
-        setSecondsLeft(s.secondsLeft ?? (s.mode === "focus" ? focus : brk) * 60);
+        setSecondsLeft(
+          s.secondsLeft ?? (s.mode === "focus" ? focus : brk) * 60,
+        );
         setStarted(true);
         setRunning(false);
         persistedRef.current.session = s;
@@ -266,7 +278,10 @@ export function PomodoroTimer() {
     if (running) {
       let remaining = secondsLeft;
       if (endAtRef.current !== null) {
-        remaining = Math.max(0, Math.ceil((endAtRef.current - Date.now()) / 1000));
+        remaining = Math.max(
+          0,
+          Math.ceil((endAtRef.current - Date.now()) / 1000),
+        );
         setSecondsLeft(remaining);
       }
       endAtRef.current = null;
@@ -285,11 +300,16 @@ export function PomodoroTimer() {
     }
     // First start of a session is a user gesture — the right moment to ask,
     // rather than requesting on mount where the browser would likely ignore it.
-    if (typeof Notification !== "undefined" && Notification.permission === "default") {
+    if (
+      typeof Notification !== "undefined" &&
+      Notification.permission === "default"
+    ) {
       Notification.requestPermission().catch(() => {});
     }
     if (mode === "focus" && !sessionIdRef.current) {
-      start.mutate({ label: label || undefined, focusMin, breakMin });
+      const id = crypto.randomUUID();
+      sessionIdRef.current = id;
+      start.mutate({ id, label: label || undefined, focusMin, breakMin });
     }
     const endAt = Date.now() + secondsLeft * 1000;
     endAtRef.current = endAt;
@@ -344,8 +364,10 @@ export function PomodoroTimer() {
     ) {
       const silent = notifPrefs?.notificationSoundOn === false;
       new Notification(
-        finishedMode === "focus" ? t("notifyFocusDoneTitle") : t("notifyBreakDoneTitle"),
-        { body: label || undefined, silent, tag: "pomodoro-complete" }
+        finishedMode === "focus"
+          ? t("notifyFocusDoneTitle")
+          : t("notifyBreakDoneTitle"),
+        { body: label || undefined, silent, tag: "pomodoro-complete" },
       );
     }
 
@@ -419,18 +441,29 @@ export function PomodoroTimer() {
 
           <div className="relative aspect-square w-[min(78vw,20rem)]">
             <svg viewBox="0 0 260 260" className="size-full -rotate-90">
-              <circle cx="130" cy="130" r={RADIUS} fill="none" stroke="var(--muted)" strokeWidth="16" />
               <circle
                 cx="130"
                 cy="130"
                 r={RADIUS}
                 fill="none"
-                stroke={mode === "focus" ? "var(--primary)" : "var(--accent-green)"}
+                stroke="var(--muted)"
+                strokeWidth="16"
+              />
+              <circle
+                cx="130"
+                cy="130"
+                r={RADIUS}
+                fill="none"
+                stroke={
+                  mode === "focus" ? "var(--primary)" : "var(--accent-green)"
+                }
                 strokeWidth="16"
                 strokeLinecap="round"
                 strokeDasharray={CIRC}
                 strokeDashoffset={CIRC * (1 - pct)}
-                style={{ transition: "stroke-dashoffset 1s linear, stroke 0.3s" }}
+                style={{
+                  transition: "stroke-dashoffset 1s linear, stroke 0.3s",
+                }}
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
@@ -445,7 +478,9 @@ export function PomodoroTimer() {
               <span
                 className={cn(
                   "rounded-full px-3 py-1 text-xs font-bold",
-                  mode === "focus" ? "bg-primary/10 text-primary" : "bg-accent-green/15 text-accent-green",
+                  mode === "focus"
+                    ? "bg-primary/10 text-primary"
+                    : "bg-accent-green/15 text-accent-green",
                 )}
               >
                 {modeLabel}
@@ -533,18 +568,25 @@ export function PomodoroTimer() {
                     <span
                       className={cn(
                         "grid size-10 shrink-0 place-items-center rounded-xl transition-colors",
-                        active ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground",
+                        active
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted text-muted-foreground",
                       )}
                     >
                       <Icon className="size-5" />
                     </span>
                     <span className="flex-1 text-sm font-bold">{t(name)}</span>
-                    <Switch checked={active} onCheckedChange={() => sounds.toggle(name)} />
+                    <Switch
+                      checked={active}
+                      onCheckedChange={() => sounds.toggle(name)}
+                    />
                   </div>
                   <div
                     className={cn(
                       "grid transition-all duration-200",
-                      active ? "mt-3 grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
+                      active
+                        ? "mt-3 grid-rows-[1fr] opacity-100"
+                        : "grid-rows-[0fr] opacity-0",
                     )}
                   >
                     <div className="overflow-hidden">
@@ -568,8 +610,12 @@ export function PomodoroTimer() {
               <Target className="size-6" />
             </span>
             <div>
-              <p className="text-sm text-muted-foreground">{t("sessionsToday")}</p>
-              <p className="text-3xl font-extrabold tabular-nums">{todayCount}</p>
+              <p className="text-sm text-muted-foreground">
+                {t("sessionsToday")}
+              </p>
+              <p className="text-3xl font-extrabold tabular-nums">
+                {todayCount}
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -590,7 +636,9 @@ export function PomodoroTimer() {
                   max={180}
                   value={focusMin}
                   disabled={started}
-                  onChange={(e) => setFocusMin(clampInt(Number(e.target.value) || 1, 1, 180))}
+                  onChange={(e) =>
+                    setFocusMin(clampInt(Number(e.target.value) || 1, 1, 180))
+                  }
                 />
               </div>
               <div className="space-y-1.5">
@@ -601,7 +649,9 @@ export function PomodoroTimer() {
                   max={60}
                   value={breakMin}
                   disabled={started}
-                  onChange={(e) => setBreakMin(clampInt(Number(e.target.value) || 1, 1, 60))}
+                  onChange={(e) =>
+                    setBreakMin(clampInt(Number(e.target.value) || 1, 1, 60))
+                  }
                 />
               </div>
             </div>
@@ -651,7 +701,9 @@ export function PomodoroTimer() {
 
           <div className="flex flex-1 flex-col items-center justify-center gap-5 px-4 text-center">
             {label && (
-              <p className="max-w-xl truncate text-lg font-bold text-white/85">{label}</p>
+              <p className="max-w-xl truncate text-lg font-bold text-white/85">
+                {label}
+              </p>
             )}
             <p
               className={cn(
@@ -663,7 +715,9 @@ export function PomodoroTimer() {
             >
               {timeText}
             </p>
-            <span className="rounded-full bg-white/15 px-4 py-1.5 text-sm font-bold">{modeLabel}</span>
+            <span className="rounded-full bg-white/15 px-4 py-1.5 text-sm font-bold">
+              {modeLabel}
+            </span>
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-3 px-4 pb-2 pt-4">
@@ -684,7 +738,11 @@ export function PomodoroTimer() {
                 mode === "focus" ? "text-primary" : "text-accent-green",
               )}
             >
-              {running ? <Pause className="size-7" /> : <Play className="size-7" />}
+              {running ? (
+                <Pause className="size-7" />
+              ) : (
+                <Play className="size-7" />
+              )}
             </button>
             <button
               type="button"
