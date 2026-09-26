@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { protectedProcedure, router } from "../trpc";
+import { sendPushToUser } from "@/lib/push";
 
 export const notificationsRouter = router({
   subscribe: protectedProcedure
@@ -45,4 +46,18 @@ export const notificationsRouter = router({
         .findUnique({ where: { endpoint: input.endpoint } })
         .then((s) => ({ subscribed: !!s && s.userId === ctx.session.user.id }));
     }),
+
+  sendTest: protectedProcedure.mutation(async ({ ctx }) => {
+    const count = await ctx.db.pushSubscription.count({ where: { userId: ctx.session.user.id } });
+    if (count === 0) {
+      return { ok: false, reason: "no-subscription" as const };
+    }
+    await sendPushToUser(ctx.session.user.id, {
+      title: "تجربة الإشعارات 🔔",
+      body: "لو شايف الرسالة دي، الإشعارات شغالة تمام.",
+      tag: "test-notification",
+      url: "/gadwly",
+    });
+    return { ok: true, reason: null };
+  }),
 });

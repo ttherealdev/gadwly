@@ -1,7 +1,8 @@
 "use client";
 
-import { BellRing, RotateCcw } from "lucide-react";
+import { BellRing, TriangleAlert } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -25,6 +26,7 @@ export function NotificationsSettings() {
   const utils = trpc.useUtils();
   const { data: prefs, isLoading } = trpc.preferences.get.useQuery();
   const push = usePushSubscription();
+  const [testResult, setTestResult] = useState<"idle" | "sent" | "no-subscription">("idle");
 
   const update = trpc.preferences.updateNotificationPrefs.useMutation({
     onMutate: async (patch) => {
@@ -39,31 +41,38 @@ export function NotificationsSettings() {
     onSettled: () => utils.preferences.get.invalidate(),
   });
 
+  async function handleSendTest() {
+    setTestResult("idle");
+    const res = await push.sendTest();
+    setTestResult(res.ok ? "sent" : res.reason === "no-subscription" ? "no-subscription" : "idle");
+  }
+
   if (isLoading || !prefs) {
     return <p className="text-sm text-muted-foreground">{t("loading")}</p>;
   }
 
-  const statusText =
-    push.support === "subscribed"
-      ? t("pushOnThisDevice")
-      : push.support === "denied"
-        ? t("pushDenied")
-        : push.support === "unsupported"
-          ? t("pushUnsupported")
-          : push.support === "unavailable"
-            ? t("pushUnavailable")
-            : t("pushOffThisDevice");
-
   return (
     <div className="space-y-6">
       <section className="rounded-2xl border border-border p-3">
-        <div className="flex items-center gap-3">
-          <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
-            <BellRing className="size-4" />
-          </span>
-          <div className="min-w-0 flex-1">
-            <p className="text-sm font-bold">{t("pushTitle")}</p>
-            <p className="text-xs text-muted-foreground">{statusText}</p>
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
+              <BellRing className="size-4" />
+            </span>
+            <div>
+              <p className="text-sm font-bold">{t("pushTitle")}</p>
+              <p className="text-xs text-muted-foreground">
+                {push.support === "subscribed"
+                  ? t("pushOnThisDevice")
+                  : push.support === "denied"
+                    ? t("pushDenied")
+                    : push.support === "unsupported"
+                      ? t("pushUnsupported")
+                      : push.support === "insecure"
+                        ? t("pushInsecure")
+                        : t("pushOffThisDevice")}
+              </p>
+            </div>
           </div>
           {push.support === "unsubscribed" && (
             <Button size="sm" variant="green" onClick={() => push.subscribe()}>
@@ -75,20 +84,27 @@ export function NotificationsSettings() {
               {t("pushDisable")}
             </Button>
           )}
-          {push.support === "unavailable" && (
-            <Button size="sm" variant="outline" onClick={() => push.subscribe()}>
-              <RotateCcw className="size-3.5" />
-              {t("pushRetry")}
-            </Button>
-          )}
         </div>
 
-        {/* This still works with push off: reminders show up while the app tab is open either way,
-            so a blocked browser push service is a "you'll get fewer reminders", not a dead end. */}
-        {push.support === "unavailable" && (
-          <p className="mt-2.5 rounded-lg bg-muted p-2.5 text-xs leading-relaxed text-muted-foreground">
-            {t("pushUnavailableHint")}
+        {push.error && (
+          <p className="mt-3 flex items-start gap-1.5 rounded-lg bg-destructive/10 p-2 text-xs text-destructive">
+            <TriangleAlert className="mt-0.5 size-3.5 shrink-0" aria-hidden />
+            {push.error === "missing-vapid-key" ? t("pushErrorMissingKey") : t("pushErrorGeneric")}
           </p>
+        )}
+
+        {push.support === "subscribed" && (
+          <div className="mt-3 border-t border-border pt-3">
+            <Button size="sm" variant="outline" onClick={handleSendTest} disabled={push.isSendingTest}>
+              {push.isSendingTest ? t("pushTesting") : t("pushSendTest")}
+            </Button>
+            {testResult === "sent" && (
+              <p className="mt-2 text-xs text-muted-foreground">{t("pushTestSent")}</p>
+            )}
+            {testResult === "no-subscription" && (
+              <p className="mt-2 text-xs text-destructive">{t("pushTestNoSubscription")}</p>
+            )}
+          </div>
         )}
       </section>
 

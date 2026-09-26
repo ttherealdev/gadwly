@@ -12,6 +12,7 @@ import {
   type PrayerTimes,
 } from "@/lib/prayer-times";
 import { trpc } from "@/lib/trpc";
+import { showAppNotification } from "@/lib/notify";
 
 export type PrayerStatus =
   | "idle"
@@ -50,32 +51,20 @@ export function usePrayerTimes() {
     setStatus("locating");
     try {
       const pos = await getBrowserLocation();
-      const t = await fetchPrayerTimesByCoords(
-        pos.coords.latitude,
-        pos.coords.longitude,
-      );
+      const t = await fetchPrayerTimesByCoords(pos.coords.latitude, pos.coords.longitude);
       setTimes(t);
       setStatus("ready");
       localStorage.setItem(
         CACHE_KEY,
-        JSON.stringify({
-          lat: pos.coords.latitude,
-          lon: pos.coords.longitude,
-          at: Date.now(),
-        }),
+        JSON.stringify({ lat: pos.coords.latitude, lon: pos.coords.longitude, at: Date.now() })
       );
-      if (
-        typeof Notification !== "undefined" &&
-        Notification.permission === "default"
-      ) {
+      if (typeof Notification !== "undefined" && Notification.permission === "default") {
         Notification.requestPermission().catch(() => {});
       }
     } catch (err) {
       if (err instanceof LocationError) {
         setStatus(
-          err.kind === "unsupported" || err.kind === "unavailable"
-            ? "error"
-            : err.kind,
+          err.kind === "unsupported" || err.kind === "unavailable" ? "error" : err.kind
         );
       } else {
         console.error("[usePrayerTimes] unclassified failure:", err);
@@ -119,29 +108,22 @@ export function usePrayerTimes() {
 
       (Object.keys(times) as PrayerKey[]).forEach((key) => {
         const flag = `${dayKey}:${key}`;
-        if (toMinutes(times[key]) !== nowMin || notifiedRef.current.has(flag))
-          return;
+        if (toMinutes(times[key]) !== nowMin || notifiedRef.current.has(flag)) return;
         notifiedRef.current.add(flag);
 
         const p = prefsRef.current;
-        const enabled =
-          p?.prayerNotifyEnabled !== false &&
-          p?.[PRAYER_PREF_FIELD[key]] !== false;
+        const enabled = p?.prayerNotifyEnabled !== false && p?.[PRAYER_PREF_FIELD[key]] !== false;
         if (!enabled) return;
 
         const soundOn = p?.notificationSoundOn !== false;
         if (soundOn) audioRefs.current[key]?.play().catch(() => {});
 
-        if (
-          typeof Notification !== "undefined" &&
-          Notification.permission === "granted"
-        ) {
-          new Notification("حان موعد الأذان", {
-            body: key,
-            silent: !soundOn,
-            tag: `prayer-${key}`,
-          });
-        }
+        showAppNotification("حان موعد الأذان", {
+          body: key,
+          silent: !soundOn,
+          tag: `prayer-${key}`,
+          icon: "/icons/icon-192.png",
+        });
       });
     }, 30_000);
     return () => clearInterval(id);
