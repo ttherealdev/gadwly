@@ -6,6 +6,7 @@ import { Tajawal } from "next/font/google";
 import { routing } from "@/i18n/routing";
 import { TRPCProvider } from "@/components/providers/trpc-provider";
 import { ServiceWorkerRegister } from "@/components/pwa/service-worker-register";
+import { NativePushRegister } from "@/components/pwa/native-push-register";
 import { Toaster } from "sonner";
 import "./globals.css";
 
@@ -81,6 +82,7 @@ export default async function LocaleLayout({
           </TRPCProvider>
         </NextIntlClientProvider>
         <ServiceWorkerRegister />
+        <NativePushRegister />
       </body>
     </html>
   );

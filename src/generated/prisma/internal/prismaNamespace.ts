@@ -1258,6 +1258,7 @@ export type UserPreferenceScalarFieldEnum = (typeof UserPreferenceScalarFieldEnu
 export const PushSubscriptionScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  platform: 'platform',
   endpoint: 'endpoint',
   p256dh: 'p256dh',
   auth: 'auth',
@@ -1400,6 +1401,20 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
  * Reference to a field of type 'Float[]'
  */
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PushPlatform'
+ */
+export type EnumPushPlatformFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PushPlatform'>
+    
+
+
+/**
+ * Reference to a field of type 'PushPlatform[]'
+ */
+export type ListEnumPushPlatformFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PushPlatform[]'>
     
 
 /**

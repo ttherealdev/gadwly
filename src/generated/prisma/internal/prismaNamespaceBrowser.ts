@@ -206,6 +206,7 @@ export type UserPreferenceScalarFieldEnum = (typeof UserPreferenceScalarFieldEnu
 export const PushSubscriptionScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
+  platform: 'platform',
   endpoint: 'endpoint',
   p256dh: 'p256dh',
   auth: 'auth',

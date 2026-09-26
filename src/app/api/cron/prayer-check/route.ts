@@ -69,17 +69,18 @@ export async function GET(req: NextRequest) {
       const nowHHmm = currentHHmmIn(data.timezone);
 
       for (const prayer of PRAYER_KEYS) {
-        const raw = data.timings[prayer]; // Aladhan sometimes appends " (TZ)"
+        const raw = data.timings[prayer];
         const hhmm = raw?.slice(0, 5);
         if (hhmm !== nowHHmm) continue;
         if (!pref[PREF_FIELD[prayer]]) continue;
 
-        await sendPushToUser(pref.userId, {
+              await sendPushToUser(pref.userId, {
           title: "حان موعد الأذان",
           body: prayer,
           tag: `prayer-${prayer}-${nowHHmm}`,
           url: "/gadwly",
           silent: !pref.notificationSoundOn,
+          channelId: "adhan",
         });
         sent += 1;
       }

@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
+    "@capacitor-firebase/messaging": "^8.5.2",
+    "@capacitor/core": "^8.5.2",
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",
     "@tanstack/react-query": "^5.103.2",
@@ -24,6 +26,8 @@
     "clsx": "^2.1.1",
     "cn": "^0.4.0",
     "dotenv": "^18.0.3",
+    "firebase": "^12.19.0",
+    "firebase-admin": "^14.5.0",
     "lucide-react": "^1.47.0",
     "next": "^16.3.6",
     "next-intl": "^4.14.6",
@@ -38,6 +42,8 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@capacitor/android": "^8.5.2",
+    "@capacitor/cli": "^8.5.2",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^22.10.0",
     "@types/pg": "^8.23.1",

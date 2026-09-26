@@ -16,6 +16,7 @@ export const notificationsRouter = router({
         where: { endpoint: input.endpoint },
         create: {
           userId: ctx.session.user.id,
+          platform: "web",
           endpoint: input.endpoint,
           p256dh: input.keys.p256dh,
           auth: input.keys.auth,
@@ -46,6 +47,30 @@ export const notificationsRouter = router({
         .findUnique({ where: { endpoint: input.endpoint } })
         .then((s) => ({ subscribed: !!s && s.userId === ctx.session.user.id }));
     }),
+
+  registerFcmToken: protectedProcedure
+    .input(z.object({ token: z.string().min(1) }))
+    .mutation(({ ctx, input }) =>
+      ctx.db.pushSubscription.upsert({
+        where: { endpoint: input.token },
+        create: {
+          userId: ctx.session.user.id,
+          platform: "android",
+          endpoint: input.token,
+        },
+        update: {
+          userId: ctx.session.user.id,
+        },
+      })
+    ),
+
+  unregisterFcmToken: protectedProcedure
+    .input(z.object({ token: z.string().min(1) }))
+    .mutation(({ ctx, input }) =>
+      ctx.db.pushSubscription.deleteMany({
+        where: { endpoint: input.token, userId: ctx.session.user.id },
+      })
+    ),
 
   sendTest: protectedProcedure.mutation(async ({ ctx }) => {
     const count = await ctx.db.pushSubscription.count({ where: { userId: ctx.session.user.id } });

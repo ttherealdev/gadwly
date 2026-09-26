@@ -40,3 +40,11 @@ export const Weekday = {
 } as const
 
 export type Weekday = (typeof Weekday)[keyof typeof Weekday]
+
+
+export const PushPlatform = {
+  web: 'web',
+  android: 'android'
+} as const
+
+export type PushPlatform = (typeof PushPlatform)[keyof typeof PushPlatform]

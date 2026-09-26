@@ -94,6 +94,14 @@ enum Weekday {
   FRI
 }
 
+// "web" = browser push subscription (p256dh/auth populated, endpoint is the
+// real push service URL). "android" = Capacitor/FCM device token (endpoint
+// holds the token itself, p256dh/auth are unused).
+enum PushPlatform {
+  web
+  android
+}
+
 model ScheduleItem {
   id        String           @id @default(cuid())
   userId    String
@@ -181,16 +189,18 @@ model UserPreference {
 }
 
 // One row per browser/device the user enabled push notifications on.
-// Not wired to a sender yet — this is the schema for the next phase
-// (a server-side push using the `web-push` package + VAPID keys).
+// `platform` "web" rows are sent through web-push (VAPID); "android" rows
+// are sent through Firebase Admin (FCM), which is what lets the adhan sound
+// actually play while the app is fully closed.
 model PushSubscription {
-  id        String   @id @default(cuid())
+  id        String       @id @default(cuid())
   userId    String
-  endpoint  String   @unique
-  p256dh    String
-  auth      String
+  platform  PushPlatform @default(web)
+  endpoint  String       @unique // push endpoint URL (web) or FCM token (android)
+  p256dh    String?
+  auth      String?
   userAgent String?
-  createdAt DateTime @default(now())
+  createdAt DateTime     @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
