@@ -58,7 +58,8 @@ export const ModelName = {
   ScheduleItem: 'ScheduleItem',
   PomodoroSession: 'PomodoroSession',
   ExamTarget: 'ExamTarget',
-  UserPreference: 'UserPreference'
+  UserPreference: 'UserPreference',
+  PushSubscription: 'PushSubscription'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -189,10 +190,30 @@ export const UserPreferenceScalarFieldEnum = {
   cityLabel: 'cityLabel',
   prayerNotifyEnabled: 'prayerNotifyEnabled',
   prayerCalcMethod: 'prayerCalcMethod',
+  notifyFajr: 'notifyFajr',
+  notifyDhuhr: 'notifyDhuhr',
+  notifyAsr: 'notifyAsr',
+  notifyMaghrib: 'notifyMaghrib',
+  notifyIsha: 'notifyIsha',
+  pomodoroNotifyEnabled: 'pomodoroNotifyEnabled',
+  notificationSoundOn: 'notificationSoundOn',
   updatedAt: 'updatedAt'
 } as const
 
 export type UserPreferenceScalarFieldEnum = (typeof UserPreferenceScalarFieldEnum)[keyof typeof UserPreferenceScalarFieldEnum]
+
+
+export const PushSubscriptionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  endpoint: 'endpoint',
+  p256dh: 'p256dh',
+  auth: 'auth',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt'
+} as const
+
+export type PushSubscriptionScalarFieldEnum = (typeof PushSubscriptionScalarFieldEnum)[keyof typeof PushSubscriptionScalarFieldEnum]
 
 
 export const SortOrder = {

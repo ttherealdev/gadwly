@@ -55,9 +55,6 @@ const SOUND_ICONS: Record<
   noise: Waves,
 };
 
-// What survives a refresh. `session` is null while idle; while active it
-// carries exactly one of endAt (running — a wall-clock deadline, immune to
-// background-tab throttling) or secondsLeft (paused — a frozen value).
 type PersistedSession = {
   mode: Mode;
   running: boolean;
@@ -95,7 +92,7 @@ export function PomodoroTimer() {
   const [prefsLoaded, setPrefsLoaded] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(25 * 60);
   const [running, setRunning] = useState(false);
-  const [started, setStarted] = useState(false); // a session is in progress (running or paused)
+  const [started, setStarted] = useState(false);
   const [label, setLabel] = useState("");
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
@@ -103,8 +100,6 @@ export function PomodoroTimer() {
   const fsRef = useRef<HTMLDivElement>(null);
   const sessionIdRef = useRef<string | null>(null);
   const endAtRef = useRef<number | null>(null);
-  // Mirrors what's on disk so every save can merge instead of clobbering
-  // fields another effect/handler just wrote.
   const persistedRef = useRef<Persisted>({
     focusMin: 25,
     breakMin: 5,
@@ -115,8 +110,17 @@ export function PomodoroTimer() {
 
   const utils = trpc.useUtils();
   const { data: todayCount = 0 } = trpc.pomodoro.todayCount.useQuery();
+  // Account-wide notification preferences (set from the settings dialog):
+  // whether a completion notification should appear, and whether it should
+  // include sound.
+  const { data: notifPrefs } = trpc.preferences.get.useQuery();
   const start = trpc.pomodoro.start.useMutation({
-    onError: (err) => console.error("[pomodoro] start failed:", err),
+    onSuccess: (s) => {
+      sessionIdRef.current = s.id;
+      if (persistedRef.current.session) {
+        savePersisted({ session: { ...persistedRef.current.session, sessionId: s.id } });
+      }
+    },
   });
   const finish = trpc.pomodoro.finish.useMutation({
     onSuccess: () => utils.pomodoro.todayCount.invalidate(),
@@ -131,29 +135,19 @@ export function PomodoroTimer() {
     }
   }
 
-  // Runs once on mount: restore prefs, and — if the tab was closed mid
-  // session — resume it (or finalize it, if it finished while we were away).
   useEffect(() => {
     try {
       const raw = localStorage.getItem(PREFS_KEY);
       const p: Partial<Persisted> = raw ? JSON.parse(raw) : {};
-      const focus =
-        typeof p.focusMin === "number" ? clampInt(p.focusMin, 1, 180) : 25;
-      const brk =
-        typeof p.breakMin === "number" ? clampInt(p.breakMin, 1, 60) : 5;
+      const focus = typeof p.focusMin === "number" ? clampInt(p.focusMin, 1, 180) : 25;
+      const brk = typeof p.breakMin === "number" ? clampInt(p.breakMin, 1, 60) : 5;
       const chime = typeof p.chime === "boolean" ? p.chime : true;
       const restoredMode: Mode = p.mode === "break" ? "break" : "focus";
 
       setFocusMin(focus);
       setBreakMin(brk);
       setChimeOn(chime);
-      persistedRef.current = {
-        focusMin: focus,
-        breakMin: brk,
-        chime,
-        mode: restoredMode,
-        session: null,
-      };
+      persistedRef.current = { focusMin: focus, breakMin: brk, chime, mode: restoredMode, session: null };
 
       const s = p.session;
       if (s && s.running && typeof s.endAt === "number") {
@@ -168,9 +162,6 @@ export function PomodoroTimer() {
           setRunning(true);
           persistedRef.current.session = s;
         } else {
-          // Ran out while the tab was closed — finalize quietly (no chime,
-          // no stale "running" session left behind) instead of resuming
-          // into an already-finished timer.
           if (s.mode === "focus" && s.sessionId) {
             finish.mutate({ id: s.sessionId, completed: true });
           }
@@ -180,9 +171,7 @@ export function PomodoroTimer() {
         setMode(s.mode);
         setLabel(s.label ?? "");
         sessionIdRef.current = s.sessionId ?? null;
-        setSecondsLeft(
-          s.secondsLeft ?? (s.mode === "focus" ? focus : brk) * 60,
-        );
+        setSecondsLeft(s.secondsLeft ?? (s.mode === "focus" ? focus : brk) * 60);
         setStarted(true);
         setRunning(false);
         persistedRef.current.session = s;
@@ -201,10 +190,6 @@ export function PomodoroTimer() {
     savePersisted({ focusMin, breakMin, chime: chimeOn, mode });
   }, [prefsLoaded, focusMin, breakMin, chimeOn, mode]);
 
-  // Guards the very first run: on mount, the restore effect above already
-  // decided the correct starting secondsLeft (resumed or default). Without
-  // this guard this effect would still see the pre-restore `started=false`
-  // in that same initial pass and stomp the resumed value back to default.
   const didMountResetEffect = useRef(false);
   useEffect(() => {
     if (!didMountResetEffect.current) {
@@ -256,7 +241,6 @@ export function PomodoroTimer() {
     return () => window.removeEventListener("keydown", onKey);
   }, [settingsOpen]);
 
-  // Real browser fullscreen (falls back to the fixed overlay where it isn't supported, e.g. iOS)
   useEffect(() => {
     if (!fullscreen) return;
     fsRef.current?.requestFullscreen?.()?.catch(() => {});
@@ -282,10 +266,7 @@ export function PomodoroTimer() {
     if (running) {
       let remaining = secondsLeft;
       if (endAtRef.current !== null) {
-        remaining = Math.max(
-          0,
-          Math.ceil((endAtRef.current - Date.now()) / 1000),
-        );
+        remaining = Math.max(0, Math.ceil((endAtRef.current - Date.now()) / 1000));
         setSecondsLeft(remaining);
       }
       endAtRef.current = null;
@@ -302,14 +283,13 @@ export function PomodoroTimer() {
       });
       return;
     }
+    // First start of a session is a user gesture — the right moment to ask,
+    // rather than requesting on mount where the browser would likely ignore it.
+    if (typeof Notification !== "undefined" && Notification.permission === "default") {
+      Notification.requestPermission().catch(() => {});
+    }
     if (mode === "focus" && !sessionIdRef.current) {
-      sessionIdRef.current = crypto.randomUUID();
-      start.mutate({
-        id: sessionIdRef.current,
-        label: label || undefined,
-        focusMin,
-        breakMin,
-      });
+      start.mutate({ label: label || undefined, focusMin, breakMin });
     }
     const endAt = Date.now() + secondsLeft * 1000;
     endAtRef.current = endAt;
@@ -350,12 +330,26 @@ export function PomodoroTimer() {
     endAtRef.current = null;
     setRunning(false);
     setStarted(false);
-    if (mode === "focus" && sessionIdRef.current) {
+    const finishedMode = mode;
+    if (finishedMode === "focus" && sessionIdRef.current) {
       finish.mutate({ id: sessionIdRef.current, completed: true });
       sessionIdRef.current = null;
     }
     if (chimeOn) sounds.chime();
-    setMode(mode === "focus" ? "break" : "focus");
+
+    if (
+      notifPrefs?.pomodoroNotifyEnabled !== false &&
+      typeof Notification !== "undefined" &&
+      Notification.permission === "granted"
+    ) {
+      const silent = notifPrefs?.notificationSoundOn === false;
+      new Notification(
+        finishedMode === "focus" ? t("notifyFocusDoneTitle") : t("notifyBreakDoneTitle"),
+        { body: label || undefined, silent, tag: "pomodoro-complete" }
+      );
+    }
+
+    setMode(finishedMode === "focus" ? "break" : "focus");
     savePersisted({ session: null });
   }
 
@@ -381,7 +375,7 @@ export function PomodoroTimer() {
 
   return (
     <div className="mx-auto grid max-w-5xl gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
-      <Card className="rounded-[4px] border-none">
+      <Card>
         <CardHeader className="flex-row items-center gap-3">
           <div className="min-w-0">
             <CardTitle className="text-xl">{t("title")}</CardTitle>
@@ -423,32 +417,20 @@ export function PomodoroTimer() {
             </Tabs>
           </div>
 
-          {/* Ring */}
           <div className="relative aspect-square w-[min(78vw,20rem)]">
             <svg viewBox="0 0 260 260" className="size-full -rotate-90">
+              <circle cx="130" cy="130" r={RADIUS} fill="none" stroke="var(--muted)" strokeWidth="16" />
               <circle
                 cx="130"
                 cy="130"
                 r={RADIUS}
                 fill="none"
-                stroke="var(--muted)"
-                strokeWidth="16"
-              />
-              <circle
-                cx="130"
-                cy="130"
-                r={RADIUS}
-                fill="none"
-                stroke={
-                  mode === "focus" ? "var(--primary)" : "var(--accent-green)"
-                }
+                stroke={mode === "focus" ? "var(--primary)" : "var(--accent-green)"}
                 strokeWidth="16"
                 strokeLinecap="round"
                 strokeDasharray={CIRC}
                 strokeDashoffset={CIRC * (1 - pct)}
-                style={{
-                  transition: "stroke-dashoffset 1s linear, stroke 0.3s",
-                }}
+                style={{ transition: "stroke-dashoffset 1s linear, stroke 0.3s" }}
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
@@ -463,9 +445,7 @@ export function PomodoroTimer() {
               <span
                 className={cn(
                   "rounded-full px-3 py-1 text-xs font-bold",
-                  mode === "focus"
-                    ? "bg-primary/10 text-primary"
-                    : "bg-accent-green/15 text-accent-green",
+                  mode === "focus" ? "bg-primary/10 text-primary" : "bg-accent-green/15 text-accent-green",
                 )}
               >
                 {modeLabel}
@@ -533,7 +513,7 @@ export function PomodoroTimer() {
       </Card>
 
       <div className="flex flex-col gap-4">
-        <Card className="rounded-[4px] border-none">
+        <Card>
           <CardHeader>
             <CardTitle className="text-base">{t("sounds")}</CardTitle>
           </CardHeader>
@@ -545,33 +525,26 @@ export function PomodoroTimer() {
                 <div
                   key={name}
                   className={cn(
-                    "rounded-[7px] border p-3 transition-colors",
+                    "rounded-2xl border p-3 transition-colors",
                     active ? "border-primary/30 bg-primary/5" : "border-border",
                   )}
                 >
                   <div className="flex items-center gap-3">
                     <span
                       className={cn(
-                        "grid size-10 shrink-0 place-items-center rounded-[7px] transition-colors",
-                        active
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted text-muted-foreground",
+                        "grid size-10 shrink-0 place-items-center rounded-xl transition-colors",
+                        active ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground",
                       )}
                     >
                       <Icon className="size-5" />
                     </span>
                     <span className="flex-1 text-sm font-bold">{t(name)}</span>
-                    <Switch
-                      checked={active}
-                      onCheckedChange={() => sounds.toggle(name)}
-                    />
+                    <Switch checked={active} onCheckedChange={() => sounds.toggle(name)} />
                   </div>
                   <div
                     className={cn(
                       "grid transition-all duration-200",
-                      active
-                        ? "mt-3 grid-rows-[1fr] opacity-100"
-                        : "grid-rows-[0fr] opacity-0",
+                      active ? "mt-3 grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
                     )}
                   >
                     <div className="overflow-hidden">
@@ -589,18 +562,14 @@ export function PomodoroTimer() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-[4px] border-none">
+        <Card>
           <CardContent className="flex items-center gap-4 pt-5">
-            <span className="grid size-12 shrink-0 place-items-center rounded-[7px] bg-accent-green/15 text-accent-green">
+            <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-accent-green/15 text-accent-green">
               <Target className="size-6" />
             </span>
             <div>
-              <p className="text-sm text-muted-foreground">
-                {t("sessionsToday")}
-              </p>
-              <p className="text-3xl font-extrabold tabular-nums">
-                {todayCount}
-              </p>
+              <p className="text-sm text-muted-foreground">{t("sessionsToday")}</p>
+              <p className="text-3xl font-extrabold tabular-nums">{todayCount}</p>
             </div>
           </CardContent>
         </Card>
@@ -621,9 +590,7 @@ export function PomodoroTimer() {
                   max={180}
                   value={focusMin}
                   disabled={started}
-                  onChange={(e) =>
-                    setFocusMin(clampInt(Number(e.target.value) || 1, 1, 180))
-                  }
+                  onChange={(e) => setFocusMin(clampInt(Number(e.target.value) || 1, 1, 180))}
                 />
               </div>
               <div className="space-y-1.5">
@@ -634,9 +601,7 @@ export function PomodoroTimer() {
                   max={60}
                   value={breakMin}
                   disabled={started}
-                  onChange={(e) =>
-                    setBreakMin(clampInt(Number(e.target.value) || 1, 1, 60))
-                  }
+                  onChange={(e) => setBreakMin(clampInt(Number(e.target.value) || 1, 1, 60))}
                 />
               </div>
             </div>
@@ -657,15 +622,6 @@ export function PomodoroTimer() {
         <div
           ref={fsRef}
           style={{
-            // Physical sides on purpose: env(safe-area-inset-*) is itself
-            // physical (tied to the notch/home-indicator's actual side), so
-            // pairing it with logical inline-start/end would mismatch in
-            // RTL. These become the reference edges for every absolutely
-            // positioned child below (the padding box, not the border box),
-            // so the exit button and progress bar get the same protection
-            // without each needing its own env() calc. And since env()
-            // recomputes live, rotating the phone — where the notch moves
-            // to a side inset instead of the top one — is covered for free.
             paddingTop: "max(0.75rem, env(safe-area-inset-top))",
             paddingBottom: "max(1rem, env(safe-area-inset-bottom))",
             paddingLeft: "max(0.75rem, env(safe-area-inset-left))",
@@ -695,9 +651,7 @@ export function PomodoroTimer() {
 
           <div className="flex flex-1 flex-col items-center justify-center gap-5 px-4 text-center">
             {label && (
-              <p className="max-w-xl truncate text-lg font-bold text-white/85">
-                {label}
-              </p>
+              <p className="max-w-xl truncate text-lg font-bold text-white/85">{label}</p>
             )}
             <p
               className={cn(
@@ -709,9 +663,7 @@ export function PomodoroTimer() {
             >
               {timeText}
             </p>
-            <span className="rounded-full bg-white/15 px-4 py-1.5 text-sm font-bold">
-              {modeLabel}
-            </span>
+            <span className="rounded-full bg-white/15 px-4 py-1.5 text-sm font-bold">{modeLabel}</span>
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-3 px-4 pb-2 pt-4">
@@ -732,11 +684,7 @@ export function PomodoroTimer() {
                 mode === "focus" ? "text-primary" : "text-accent-green",
               )}
             >
-              {running ? (
-                <Pause className="size-7" />
-              ) : (
-                <Play className="size-7" />
-              )}
+              {running ? <Pause className="size-7" /> : <Play className="size-7" />}
             </button>
             <button
               type="button"

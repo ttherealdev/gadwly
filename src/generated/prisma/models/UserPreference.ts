@@ -47,6 +47,13 @@ export type UserPreferenceMinAggregateOutputType = {
   cityLabel: string | null
   prayerNotifyEnabled: boolean | null
   prayerCalcMethod: number | null
+  notifyFajr: boolean | null
+  notifyDhuhr: boolean | null
+  notifyAsr: boolean | null
+  notifyMaghrib: boolean | null
+  notifyIsha: boolean | null
+  pomodoroNotifyEnabled: boolean | null
+  notificationSoundOn: boolean | null
   updatedAt: Date | null
 }
 
@@ -59,6 +66,13 @@ export type UserPreferenceMaxAggregateOutputType = {
   cityLabel: string | null
   prayerNotifyEnabled: boolean | null
   prayerCalcMethod: number | null
+  notifyFajr: boolean | null
+  notifyDhuhr: boolean | null
+  notifyAsr: boolean | null
+  notifyMaghrib: boolean | null
+  notifyIsha: boolean | null
+  pomodoroNotifyEnabled: boolean | null
+  notificationSoundOn: boolean | null
   updatedAt: Date | null
 }
 
@@ -71,6 +85,13 @@ export type UserPreferenceCountAggregateOutputType = {
   cityLabel: number
   prayerNotifyEnabled: number
   prayerCalcMethod: number
+  notifyFajr: number
+  notifyDhuhr: number
+  notifyAsr: number
+  notifyMaghrib: number
+  notifyIsha: number
+  pomodoroNotifyEnabled: number
+  notificationSoundOn: number
   updatedAt: number
   _all: number
 }
@@ -97,6 +118,13 @@ export type UserPreferenceMinAggregateInputType = {
   cityLabel?: true
   prayerNotifyEnabled?: true
   prayerCalcMethod?: true
+  notifyFajr?: true
+  notifyDhuhr?: true
+  notifyAsr?: true
+  notifyMaghrib?: true
+  notifyIsha?: true
+  pomodoroNotifyEnabled?: true
+  notificationSoundOn?: true
   updatedAt?: true
 }
 
@@ -109,6 +137,13 @@ export type UserPreferenceMaxAggregateInputType = {
   cityLabel?: true
   prayerNotifyEnabled?: true
   prayerCalcMethod?: true
+  notifyFajr?: true
+  notifyDhuhr?: true
+  notifyAsr?: true
+  notifyMaghrib?: true
+  notifyIsha?: true
+  pomodoroNotifyEnabled?: true
+  notificationSoundOn?: true
   updatedAt?: true
 }
 
@@ -121,6 +156,13 @@ export type UserPreferenceCountAggregateInputType = {
   cityLabel?: true
   prayerNotifyEnabled?: true
   prayerCalcMethod?: true
+  notifyFajr?: true
+  notifyDhuhr?: true
+  notifyAsr?: true
+  notifyMaghrib?: true
+  notifyIsha?: true
+  pomodoroNotifyEnabled?: true
+  notificationSoundOn?: true
   updatedAt?: true
   _all?: true
 }
@@ -220,6 +262,13 @@ export type UserPreferenceGroupByOutputType = {
   cityLabel: string | null
   prayerNotifyEnabled: boolean
   prayerCalcMethod: number
+  notifyFajr: boolean
+  notifyDhuhr: boolean
+  notifyAsr: boolean
+  notifyMaghrib: boolean
+  notifyIsha: boolean
+  pomodoroNotifyEnabled: boolean
+  notificationSoundOn: boolean
   updatedAt: Date
   _count: UserPreferenceCountAggregateOutputType | null
   _avg: UserPreferenceAvgAggregateOutputType | null
@@ -255,6 +304,13 @@ export type UserPreferenceWhereInput = {
   cityLabel?: Prisma.StringNullableFilter<"UserPreference"> | string | null
   prayerNotifyEnabled?: Prisma.BoolFilter<"UserPreference"> | boolean
   prayerCalcMethod?: Prisma.IntFilter<"UserPreference"> | number
+  notifyFajr?: Prisma.BoolFilter<"UserPreference"> | boolean
+  notifyDhuhr?: Prisma.BoolFilter<"UserPreference"> | boolean
+  notifyAsr?: Prisma.BoolFilter<"UserPreference"> | boolean
+  notifyMaghrib?: Prisma.BoolFilter<"UserPreference"> | boolean
+  notifyIsha?: Prisma.BoolFilter<"UserPreference"> | boolean
+  pomodoroNotifyEnabled?: Prisma.BoolFilter<"UserPreference"> | boolean
+  notificationSoundOn?: Prisma.BoolFilter<"UserPreference"> | boolean
   updatedAt?: Prisma.DateTimeFilter<"UserPreference"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
@@ -268,6 +324,13 @@ export type UserPreferenceOrderByWithRelationInput = {
   cityLabel?: Prisma.SortOrderInput | Prisma.SortOrder
   prayerNotifyEnabled?: Prisma.SortOrder
   prayerCalcMethod?: Prisma.SortOrder
+  notifyFajr?: Prisma.SortOrder
+  notifyDhuhr?: Prisma.SortOrder
+  notifyAsr?: Prisma.SortOrder
+  notifyMaghrib?: Prisma.SortOrder
+  notifyIsha?: Prisma.SortOrder
+  pomodoroNotifyEnabled?: Prisma.SortOrder
+  notificationSoundOn?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
 }
@@ -284,6 +347,13 @@ export type UserPreferenceWhereUniqueInput = Prisma.AtLeast<{
   cityLabel?: Prisma.StringNullableFilter<"UserPreference"> | string | null
   prayerNotifyEnabled?: Prisma.BoolFilter<"UserPreference"> | boolean
   prayerCalcMethod?: Prisma.IntFilter<"UserPreference"> | number
+  notifyFajr?: Prisma.BoolFilter<"UserPreference"> | boolean
+  notifyDhuhr?: Prisma.BoolFilter<"UserPreference"> | boolean
+  notifyAsr?: Prisma.BoolFilter<"UserPreference"> | boolean
+  notifyMaghrib?: Prisma.BoolFilter<"UserPreference"> | boolean
+  notifyIsha?: Prisma.BoolFilter<"UserPreference"> | boolean
+  pomodoroNotifyEnabled?: Prisma.BoolFilter<"UserPreference"> | boolean
+  notificationSoundOn?: Prisma.BoolFilter<"UserPreference"> | boolean
   updatedAt?: Prisma.DateTimeFilter<"UserPreference"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id" | "userId">
@@ -297,6 +367,13 @@ export type UserPreferenceOrderByWithAggregationInput = {
   cityLabel?: Prisma.SortOrderInput | Prisma.SortOrder
   prayerNotifyEnabled?: Prisma.SortOrder
   prayerCalcMethod?: Prisma.SortOrder
+  notifyFajr?: Prisma.SortOrder
+  notifyDhuhr?: Prisma.SortOrder
+  notifyAsr?: Prisma.SortOrder
+  notifyMaghrib?: Prisma.SortOrder
+  notifyIsha?: Prisma.SortOrder
+  pomodoroNotifyEnabled?: Prisma.SortOrder
+  notificationSoundOn?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserPreferenceCountOrderByAggregateInput
   _avg?: Prisma.UserPreferenceAvgOrderByAggregateInput
@@ -317,6 +394,13 @@ export type UserPreferenceScalarWhereWithAggregatesInput = {
   cityLabel?: Prisma.StringNullableWithAggregatesFilter<"UserPreference"> | string | null
   prayerNotifyEnabled?: Prisma.BoolWithAggregatesFilter<"UserPreference"> | boolean
   prayerCalcMethod?: Prisma.IntWithAggregatesFilter<"UserPreference"> | number
+  notifyFajr?: Prisma.BoolWithAggregatesFilter<"UserPreference"> | boolean
+  notifyDhuhr?: Prisma.BoolWithAggregatesFilter<"UserPreference"> | boolean
+  notifyAsr?: Prisma.BoolWithAggregatesFilter<"UserPreference"> | boolean
+  notifyMaghrib?: Prisma.BoolWithAggregatesFilter<"UserPreference"> | boolean
+  notifyIsha?: Prisma.BoolWithAggregatesFilter<"UserPreference"> | boolean
+  pomodoroNotifyEnabled?: Prisma.BoolWithAggregatesFilter<"UserPreference"> | boolean
+  notificationSoundOn?: Prisma.BoolWithAggregatesFilter<"UserPreference"> | boolean
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"UserPreference"> | Date | string
 }
 
@@ -328,6 +412,13 @@ export type UserPreferenceCreateInput = {
   cityLabel?: string | null
   prayerNotifyEnabled?: boolean
   prayerCalcMethod?: number
+  notifyFajr?: boolean
+  notifyDhuhr?: boolean
+  notifyAsr?: boolean
+  notifyMaghrib?: boolean
+  notifyIsha?: boolean
+  pomodoroNotifyEnabled?: boolean
+  notificationSoundOn?: boolean
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPreferencesInput
 }
@@ -341,6 +432,13 @@ export type UserPreferenceUncheckedCreateInput = {
   cityLabel?: string | null
   prayerNotifyEnabled?: boolean
   prayerCalcMethod?: number
+  notifyFajr?: boolean
+  notifyDhuhr?: boolean
+  notifyAsr?: boolean
+  notifyMaghrib?: boolean
+  notifyIsha?: boolean
+  pomodoroNotifyEnabled?: boolean
+  notificationSoundOn?: boolean
   updatedAt?: Date | string
 }
 
@@ -352,6 +450,13 @@ export type UserPreferenceUpdateInput = {
   cityLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   prayerNotifyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   prayerCalcMethod?: Prisma.IntFieldUpdateOperationsInput | number
+  notifyFajr?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyDhuhr?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyAsr?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyMaghrib?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyIsha?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pomodoroNotifyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notificationSoundOn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPreferencesNestedInput
 }
@@ -365,6 +470,13 @@ export type UserPreferenceUncheckedUpdateInput = {
   cityLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   prayerNotifyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   prayerCalcMethod?: Prisma.IntFieldUpdateOperationsInput | number
+  notifyFajr?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyDhuhr?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyAsr?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyMaghrib?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyIsha?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pomodoroNotifyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notificationSoundOn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -377,6 +489,13 @@ export type UserPreferenceCreateManyInput = {
   cityLabel?: string | null
   prayerNotifyEnabled?: boolean
   prayerCalcMethod?: number
+  notifyFajr?: boolean
+  notifyDhuhr?: boolean
+  notifyAsr?: boolean
+  notifyMaghrib?: boolean
+  notifyIsha?: boolean
+  pomodoroNotifyEnabled?: boolean
+  notificationSoundOn?: boolean
   updatedAt?: Date | string
 }
 
@@ -388,6 +507,13 @@ export type UserPreferenceUpdateManyMutationInput = {
   cityLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   prayerNotifyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   prayerCalcMethod?: Prisma.IntFieldUpdateOperationsInput | number
+  notifyFajr?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyDhuhr?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyAsr?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyMaghrib?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyIsha?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pomodoroNotifyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notificationSoundOn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -400,6 +526,13 @@ export type UserPreferenceUncheckedUpdateManyInput = {
   cityLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   prayerNotifyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   prayerCalcMethod?: Prisma.IntFieldUpdateOperationsInput | number
+  notifyFajr?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyDhuhr?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyAsr?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyMaghrib?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyIsha?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pomodoroNotifyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notificationSoundOn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -417,6 +550,13 @@ export type UserPreferenceCountOrderByAggregateInput = {
   cityLabel?: Prisma.SortOrder
   prayerNotifyEnabled?: Prisma.SortOrder
   prayerCalcMethod?: Prisma.SortOrder
+  notifyFajr?: Prisma.SortOrder
+  notifyDhuhr?: Prisma.SortOrder
+  notifyAsr?: Prisma.SortOrder
+  notifyMaghrib?: Prisma.SortOrder
+  notifyIsha?: Prisma.SortOrder
+  pomodoroNotifyEnabled?: Prisma.SortOrder
+  notificationSoundOn?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -435,6 +575,13 @@ export type UserPreferenceMaxOrderByAggregateInput = {
   cityLabel?: Prisma.SortOrder
   prayerNotifyEnabled?: Prisma.SortOrder
   prayerCalcMethod?: Prisma.SortOrder
+  notifyFajr?: Prisma.SortOrder
+  notifyDhuhr?: Prisma.SortOrder
+  notifyAsr?: Prisma.SortOrder
+  notifyMaghrib?: Prisma.SortOrder
+  notifyIsha?: Prisma.SortOrder
+  pomodoroNotifyEnabled?: Prisma.SortOrder
+  notificationSoundOn?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -447,6 +594,13 @@ export type UserPreferenceMinOrderByAggregateInput = {
   cityLabel?: Prisma.SortOrder
   prayerNotifyEnabled?: Prisma.SortOrder
   prayerCalcMethod?: Prisma.SortOrder
+  notifyFajr?: Prisma.SortOrder
+  notifyDhuhr?: Prisma.SortOrder
+  notifyAsr?: Prisma.SortOrder
+  notifyMaghrib?: Prisma.SortOrder
+  notifyIsha?: Prisma.SortOrder
+  pomodoroNotifyEnabled?: Prisma.SortOrder
+  notificationSoundOn?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -504,6 +658,13 @@ export type UserPreferenceCreateWithoutUserInput = {
   cityLabel?: string | null
   prayerNotifyEnabled?: boolean
   prayerCalcMethod?: number
+  notifyFajr?: boolean
+  notifyDhuhr?: boolean
+  notifyAsr?: boolean
+  notifyMaghrib?: boolean
+  notifyIsha?: boolean
+  pomodoroNotifyEnabled?: boolean
+  notificationSoundOn?: boolean
   updatedAt?: Date | string
 }
 
@@ -515,6 +676,13 @@ export type UserPreferenceUncheckedCreateWithoutUserInput = {
   cityLabel?: string | null
   prayerNotifyEnabled?: boolean
   prayerCalcMethod?: number
+  notifyFajr?: boolean
+  notifyDhuhr?: boolean
+  notifyAsr?: boolean
+  notifyMaghrib?: boolean
+  notifyIsha?: boolean
+  pomodoroNotifyEnabled?: boolean
+  notificationSoundOn?: boolean
   updatedAt?: Date | string
 }
 
@@ -542,6 +710,13 @@ export type UserPreferenceUpdateWithoutUserInput = {
   cityLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   prayerNotifyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   prayerCalcMethod?: Prisma.IntFieldUpdateOperationsInput | number
+  notifyFajr?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyDhuhr?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyAsr?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyMaghrib?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyIsha?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pomodoroNotifyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notificationSoundOn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -553,6 +728,13 @@ export type UserPreferenceUncheckedUpdateWithoutUserInput = {
   cityLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   prayerNotifyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   prayerCalcMethod?: Prisma.IntFieldUpdateOperationsInput | number
+  notifyFajr?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyDhuhr?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyAsr?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyMaghrib?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyIsha?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  pomodoroNotifyEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notificationSoundOn?: Prisma.BoolFieldUpdateOperationsInput | boolean
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -567,6 +749,13 @@ export type UserPreferenceSelect<ExtArgs extends runtime.Types.Extensions.Intern
   cityLabel?: boolean
   prayerNotifyEnabled?: boolean
   prayerCalcMethod?: boolean
+  notifyFajr?: boolean
+  notifyDhuhr?: boolean
+  notifyAsr?: boolean
+  notifyMaghrib?: boolean
+  notifyIsha?: boolean
+  pomodoroNotifyEnabled?: boolean
+  notificationSoundOn?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["userPreference"]>
@@ -580,6 +769,13 @@ export type UserPreferenceSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   cityLabel?: boolean
   prayerNotifyEnabled?: boolean
   prayerCalcMethod?: boolean
+  notifyFajr?: boolean
+  notifyDhuhr?: boolean
+  notifyAsr?: boolean
+  notifyMaghrib?: boolean
+  notifyIsha?: boolean
+  pomodoroNotifyEnabled?: boolean
+  notificationSoundOn?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["userPreference"]>
@@ -593,6 +789,13 @@ export type UserPreferenceSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   cityLabel?: boolean
   prayerNotifyEnabled?: boolean
   prayerCalcMethod?: boolean
+  notifyFajr?: boolean
+  notifyDhuhr?: boolean
+  notifyAsr?: boolean
+  notifyMaghrib?: boolean
+  notifyIsha?: boolean
+  pomodoroNotifyEnabled?: boolean
+  notificationSoundOn?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["userPreference"]>
@@ -606,10 +809,17 @@ export type UserPreferenceSelectScalar = {
   cityLabel?: boolean
   prayerNotifyEnabled?: boolean
   prayerCalcMethod?: boolean
+  notifyFajr?: boolean
+  notifyDhuhr?: boolean
+  notifyAsr?: boolean
+  notifyMaghrib?: boolean
+  notifyIsha?: boolean
+  pomodoroNotifyEnabled?: boolean
+  notificationSoundOn?: boolean
   updatedAt?: boolean
 }
 
-export type UserPreferenceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "locale" | "latitude" | "longitude" | "cityLabel" | "prayerNotifyEnabled" | "prayerCalcMethod" | "updatedAt", ExtArgs["result"]["userPreference"]>
+export type UserPreferenceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "locale" | "latitude" | "longitude" | "cityLabel" | "prayerNotifyEnabled" | "prayerCalcMethod" | "notifyFajr" | "notifyDhuhr" | "notifyAsr" | "notifyMaghrib" | "notifyIsha" | "pomodoroNotifyEnabled" | "notificationSoundOn" | "updatedAt", ExtArgs["result"]["userPreference"]>
 export type UserPreferenceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -634,6 +844,13 @@ export type $UserPreferencePayload<ExtArgs extends runtime.Types.Extensions.Inte
     cityLabel: string | null
     prayerNotifyEnabled: boolean
     prayerCalcMethod: number
+    notifyFajr: boolean
+    notifyDhuhr: boolean
+    notifyAsr: boolean
+    notifyMaghrib: boolean
+    notifyIsha: boolean
+    pomodoroNotifyEnabled: boolean
+    notificationSoundOn: boolean
     updatedAt: Date
   }, ExtArgs["result"]["userPreference"]>
   composites: {}
@@ -1067,6 +1284,13 @@ export interface UserPreferenceFieldRefs {
   readonly cityLabel: Prisma.FieldRef<"UserPreference", 'String'>
   readonly prayerNotifyEnabled: Prisma.FieldRef<"UserPreference", 'Boolean'>
   readonly prayerCalcMethod: Prisma.FieldRef<"UserPreference", 'Int'>
+  readonly notifyFajr: Prisma.FieldRef<"UserPreference", 'Boolean'>
+  readonly notifyDhuhr: Prisma.FieldRef<"UserPreference", 'Boolean'>
+  readonly notifyAsr: Prisma.FieldRef<"UserPreference", 'Boolean'>
+  readonly notifyMaghrib: Prisma.FieldRef<"UserPreference", 'Boolean'>
+  readonly notifyIsha: Prisma.FieldRef<"UserPreference", 'Boolean'>
+  readonly pomodoroNotifyEnabled: Prisma.FieldRef<"UserPreference", 'Boolean'>
+  readonly notificationSoundOn: Prisma.FieldRef<"UserPreference", 'Boolean'>
   readonly updatedAt: Prisma.FieldRef<"UserPreference", 'DateTime'>
 }
     

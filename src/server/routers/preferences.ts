@@ -21,4 +21,25 @@ export const preferencesRouter = router({
         update: input,
       })
     ),
+
+  updateNotificationPrefs: protectedProcedure
+    .input(
+      z.object({
+        prayerNotifyEnabled: z.boolean().optional(),
+        notifyFajr: z.boolean().optional(),
+        notifyDhuhr: z.boolean().optional(),
+        notifyAsr: z.boolean().optional(),
+        notifyMaghrib: z.boolean().optional(),
+        notifyIsha: z.boolean().optional(),
+        pomodoroNotifyEnabled: z.boolean().optional(),
+        notificationSoundOn: z.boolean().optional(),
+      })
+    )
+    .mutation(({ ctx, input }) =>
+      ctx.db.userPreference.upsert({
+        where: { userId: ctx.session.user.id },
+        create: { userId: ctx.session.user.id, ...input },
+        update: input,
+      })
+    ),
 });

@@ -16,7 +16,7 @@ const DEFAULT_VOLUME: Record<SoundName, number> = {
   fire: 55,
   noise: 40,
 };
-const TRIM: Record<SoundName, number> = { rain: 1, fire: 0.8, noise: 0.5 };
+const TRIM: Record<SoundName, number> = { rain: 0.7, fire: 0.8, noise: 0.5 };
 const level = (name: SoundName, v: number) =>
   TRIM[name] * Math.pow(v / 100, 1.7);
 
@@ -90,7 +90,6 @@ export type Sched = (
   tick: (from: number, to: number) => void,
 ) => () => void;
 
-/** Schedules audio events ~1.5s ahead, so sound keeps going even when the tab's timers are throttled. */
 export const startScheduler: Sched = (ctx, tick) => {
   let done = 0;
   const run = () => {
@@ -127,7 +126,6 @@ function panner(ctx: BaseAudioContext, value: number) {
   return p;
 }
 
-/** A short one-shot burst of filtered noise: the building block of drops and crackles. */
 function burst(
   ctx: BaseAudioContext,
   out: AudioNode,
@@ -162,7 +160,6 @@ function burst(
   s.start(t, rand(0, Math.max(0, white.duration - 0.2)), o.dur + 0.02);
 }
 
-/** Looping source, started at a random offset so layers never line up. */
 function loopSource(
   ctx: BaseAudioContext,
   buf: AudioBuffer,
@@ -182,7 +179,6 @@ function loopSource(
   return s;
 }
 
-/** Slow sine that gently moves an AudioParam, so the sound "breathes". */
 function wobble(
   ctx: BaseAudioContext,
   hz: number,
@@ -220,8 +216,8 @@ export function buildRain(
   const hissGain = ctx.createGain();
   hissGain.gain.value = 0.5;
   loopSource(ctx, bufs.pink, stops)
-    .connect(filter(ctx, "highpass", 600, 0.5))
-    .connect(filter(ctx, "lowpass", 8500, 0.5))
+    .connect(filter(ctx, "highpass", 6000, 0.5))
+    .connect(filter(ctx, "lowpass", 3000, 0.5))
     .connect(hissGain)
     .connect(out);
   wobble(ctx, 0.11, 0.09, hissGain.gain, stops);
@@ -277,7 +273,6 @@ export function buildFire(
     .connect(out);
   wobble(ctx, 0.23, 0.05, body.gain, stops);
 
-  // random pops, sometimes in little clusters, now and then a loud snap
   let next = 0;
   let nextWobble = 0;
   stops.push(
@@ -323,7 +318,6 @@ export function buildNoise(
   return { stop: () => stops.forEach((s) => s()) };
 }
 
-/** A soft three-note rising chime that rings out: pleasant, not an alarm. */
 export function playChime(
   ctx: BaseAudioContext,
   out: AudioNode,
@@ -383,7 +377,6 @@ export function useAmbientSounds() {
   const bufsRef = useRef<Bufs | null>(null);
   const entries = useRef<Partial<Record<SoundName, Entry>>>({});
 
-  // Browsers only allow audio after a user gesture, so the context is created from click handlers.
   const unlock = useCallback(() => {
     if (!ctxRef.current) {
       const Ctor: typeof AudioContext =
@@ -396,7 +389,6 @@ export function useAmbientSounds() {
     return ctxRef.current;
   }, []);
 
-  // saved volumes (sounds themselves always start off)
   useEffect(() => {
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "{}");

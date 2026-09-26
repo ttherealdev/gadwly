@@ -28,7 +28,8 @@
     "today": "اليوم",
     "openMenu": "فتح القائمة",
     "switchLanguage": "تغيير اللغة",
-    "account": "قائمة الحساب"
+    "account": "قائمة الحساب",
+    "settings": "الإعدادات"
   },
   "dashboard": {
     "greeting": "أهلاً بيك، {name}",
@@ -190,7 +191,9 @@
     "noise": "ضوضاء هادئة",
     "skip": "تخطي",
     "chime": "نغمة عند انتهاء الجلسة",
-    "fullscreen": "ملء الشاشة"
+    "fullscreen": "ملء الشاشة",
+    "notifyFocusDoneTitle": "انتهت جلسة التركيز",
+    "notifyBreakDoneTitle": "انتهت جلسة الاستراحة"
   },
   "auth": {
     "loginTitle": "سجّل دخولك في جدولي",
@@ -211,5 +214,27 @@
     "title": "الصفحة غير موجودة",
     "description": "الرابط الذي فتحته غير صحيح أو تم نقل الصفحة.",
     "backHome": "العودة إلى الرئيسية"
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "tabs": {
+      "notifications": "الإشعارات",
+      "sounds": "الأصوات",
+      "account": "الحساب"
+    },
+    "comingSoon": "قريبًا",
+    "loading": "جاري التحميل...",
+    "prayerNotifications": "إشعارات مواقيت الصلاة",
+    "pomodoroNotifications": "إشعار انتهاء البومودورو",
+    "notificationSound": "صوت مع الإشعار",
+    "pushOffThisDevice": "تعطيل الإشعارات على هذا الجهاز",
+    "pushOnThisDevice": "تفعيل الإشعارات على هذا الجهاز",
+    "pushUnsupported": "يبدو أن متصفحك لا يدعم الإشعارات. جرّب استخدام Chrome أو Edge أو Firefox.",
+    "pushTitle": "إشعارات المتصفح",
+    "pushEnable": "تفعيل الإشعارات",
+    "pushDisable": "تعطيل الإشعارات",
+    "pushUnavailable": "غير متاحة على المتصفح ده دلوقتي",
+    "pushUnavailableHint": "بعض المتصفحات (زي Brave) بتقفل إشعارات الخلفية بشكل افتراضي. من غيرها، لسه هتوصلك تنبيهات المواقيت والتركيز طول ما التطبيق فاتح عندك في تاب.",
+    "pushRetry": "حاول تاني"
   }
 }

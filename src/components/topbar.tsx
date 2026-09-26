@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, Home, LogOut, Menu } from "lucide-react";
+import { ChevronDown, Home, LogOut, Menu, Settings } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { useSidebar } from "@/components/sidebar-context";
@@ -13,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useSettingsHash } from "@/hooks/use-settings-hash";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { signOut, useSession } from "@/lib/auth-client";
 import { UserAvatar } from "./user-avatar";
@@ -27,6 +28,7 @@ export function Topbar({ title }: { title: string }) {
   const router = useRouter();
   const { data: session } = useSession();
   const { setMobileOpen } = useSidebar();
+  const { openSettings } = useSettingsHash();
   const [isSigningOut, startSignOut] = useTransition();
 
   const user = session?.user;
@@ -91,6 +93,11 @@ export function Topbar({ title }: { title: string }) {
             <DropdownMenuItem render={<Link href="/gadwly" />} className={rowClass}>
               <Home className="size-4 text-sky-500" />
               {tNav("home")}
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={() => openSettings()} className={rowClass}>
+              <Settings className="size-4 text-sky-500" />
+              {t("settings")}
             </DropdownMenuItem>
 
             <DropdownMenuSeparator className="mx-5 my-2 h-1 rounded-full bg-muted" />

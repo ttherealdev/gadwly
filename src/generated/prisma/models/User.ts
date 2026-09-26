@@ -204,6 +204,7 @@ export type UserWhereInput = {
   pomodoroLogs?: Prisma.PomodoroSessionListRelationFilter
   examTargets?: Prisma.ExamTargetListRelationFilter
   preferences?: Prisma.XOR<Prisma.UserPreferenceNullableScalarRelationFilter, Prisma.UserPreferenceWhereInput> | null
+  pushSubscriptions?: Prisma.PushSubscriptionListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -220,6 +221,7 @@ export type UserOrderByWithRelationInput = {
   pomodoroLogs?: Prisma.PomodoroSessionOrderByRelationAggregateInput
   examTargets?: Prisma.ExamTargetOrderByRelationAggregateInput
   preferences?: Prisma.UserPreferenceOrderByWithRelationInput
+  pushSubscriptions?: Prisma.PushSubscriptionOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -239,6 +241,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   pomodoroLogs?: Prisma.PomodoroSessionListRelationFilter
   examTargets?: Prisma.ExamTargetListRelationFilter
   preferences?: Prisma.XOR<Prisma.UserPreferenceNullableScalarRelationFilter, Prisma.UserPreferenceWhereInput> | null
+  pushSubscriptions?: Prisma.PushSubscriptionListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -281,6 +284,7 @@ export type UserCreateInput = {
   pomodoroLogs?: Prisma.PomodoroSessionCreateNestedManyWithoutUserInput
   examTargets?: Prisma.ExamTargetCreateNestedManyWithoutUserInput
   preferences?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -297,6 +301,7 @@ export type UserUncheckedCreateInput = {
   pomodoroLogs?: Prisma.PomodoroSessionUncheckedCreateNestedManyWithoutUserInput
   examTargets?: Prisma.ExamTargetUncheckedCreateNestedManyWithoutUserInput
   preferences?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -313,6 +318,7 @@ export type UserUpdateInput = {
   pomodoroLogs?: Prisma.PomodoroSessionUpdateManyWithoutUserNestedInput
   examTargets?: Prisma.ExamTargetUpdateManyWithoutUserNestedInput
   preferences?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -329,6 +335,7 @@ export type UserUncheckedUpdateInput = {
   pomodoroLogs?: Prisma.PomodoroSessionUncheckedUpdateManyWithoutUserNestedInput
   examTargets?: Prisma.ExamTargetUncheckedUpdateManyWithoutUserNestedInput
   preferences?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -496,6 +503,20 @@ export type UserUpdateOneRequiredWithoutPreferencesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPreferencesInput, Prisma.UserUpdateWithoutPreferencesInput>, Prisma.UserUncheckedUpdateWithoutPreferencesInput>
 }
 
+export type UserCreateNestedOneWithoutPushSubscriptionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPushSubscriptionsInput, Prisma.UserUncheckedCreateWithoutPushSubscriptionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPushSubscriptionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutPushSubscriptionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPushSubscriptionsInput, Prisma.UserUncheckedCreateWithoutPushSubscriptionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPushSubscriptionsInput
+  upsert?: Prisma.UserUpsertWithoutPushSubscriptionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPushSubscriptionsInput, Prisma.UserUpdateWithoutPushSubscriptionsInput>, Prisma.UserUncheckedUpdateWithoutPushSubscriptionsInput>
+}
+
 export type UserCreateWithoutSessionsInput = {
   id?: string
   name: string
@@ -509,6 +530,7 @@ export type UserCreateWithoutSessionsInput = {
   pomodoroLogs?: Prisma.PomodoroSessionCreateNestedManyWithoutUserInput
   examTargets?: Prisma.ExamTargetCreateNestedManyWithoutUserInput
   preferences?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -524,6 +546,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   pomodoroLogs?: Prisma.PomodoroSessionUncheckedCreateNestedManyWithoutUserInput
   examTargets?: Prisma.ExamTargetUncheckedCreateNestedManyWithoutUserInput
   preferences?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -555,6 +578,7 @@ export type UserUpdateWithoutSessionsInput = {
   pomodoroLogs?: Prisma.PomodoroSessionUpdateManyWithoutUserNestedInput
   examTargets?: Prisma.ExamTargetUpdateManyWithoutUserNestedInput
   preferences?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -570,6 +594,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   pomodoroLogs?: Prisma.PomodoroSessionUncheckedUpdateManyWithoutUserNestedInput
   examTargets?: Prisma.ExamTargetUncheckedUpdateManyWithoutUserNestedInput
   preferences?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAccountsInput = {
@@ -585,6 +610,7 @@ export type UserCreateWithoutAccountsInput = {
   pomodoroLogs?: Prisma.PomodoroSessionCreateNestedManyWithoutUserInput
   examTargets?: Prisma.ExamTargetCreateNestedManyWithoutUserInput
   preferences?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAccountsInput = {
@@ -600,6 +626,7 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   pomodoroLogs?: Prisma.PomodoroSessionUncheckedCreateNestedManyWithoutUserInput
   examTargets?: Prisma.ExamTargetUncheckedCreateNestedManyWithoutUserInput
   preferences?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAccountsInput = {
@@ -631,6 +658,7 @@ export type UserUpdateWithoutAccountsInput = {
   pomodoroLogs?: Prisma.PomodoroSessionUpdateManyWithoutUserNestedInput
   examTargets?: Prisma.ExamTargetUpdateManyWithoutUserNestedInput
   preferences?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -646,6 +674,7 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   pomodoroLogs?: Prisma.PomodoroSessionUncheckedUpdateManyWithoutUserNestedInput
   examTargets?: Prisma.ExamTargetUncheckedUpdateManyWithoutUserNestedInput
   preferences?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutScheduleItemsInput = {
@@ -661,6 +690,7 @@ export type UserCreateWithoutScheduleItemsInput = {
   pomodoroLogs?: Prisma.PomodoroSessionCreateNestedManyWithoutUserInput
   examTargets?: Prisma.ExamTargetCreateNestedManyWithoutUserInput
   preferences?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutScheduleItemsInput = {
@@ -676,6 +706,7 @@ export type UserUncheckedCreateWithoutScheduleItemsInput = {
   pomodoroLogs?: Prisma.PomodoroSessionUncheckedCreateNestedManyWithoutUserInput
   examTargets?: Prisma.ExamTargetUncheckedCreateNestedManyWithoutUserInput
   preferences?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutScheduleItemsInput = {
@@ -707,6 +738,7 @@ export type UserUpdateWithoutScheduleItemsInput = {
   pomodoroLogs?: Prisma.PomodoroSessionUpdateManyWithoutUserNestedInput
   examTargets?: Prisma.ExamTargetUpdateManyWithoutUserNestedInput
   preferences?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutScheduleItemsInput = {
@@ -722,6 +754,7 @@ export type UserUncheckedUpdateWithoutScheduleItemsInput = {
   pomodoroLogs?: Prisma.PomodoroSessionUncheckedUpdateManyWithoutUserNestedInput
   examTargets?: Prisma.ExamTargetUncheckedUpdateManyWithoutUserNestedInput
   preferences?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPomodoroLogsInput = {
@@ -737,6 +770,7 @@ export type UserCreateWithoutPomodoroLogsInput = {
   scheduleItems?: Prisma.ScheduleItemCreateNestedManyWithoutUserInput
   examTargets?: Prisma.ExamTargetCreateNestedManyWithoutUserInput
   preferences?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPomodoroLogsInput = {
@@ -752,6 +786,7 @@ export type UserUncheckedCreateWithoutPomodoroLogsInput = {
   scheduleItems?: Prisma.ScheduleItemUncheckedCreateNestedManyWithoutUserInput
   examTargets?: Prisma.ExamTargetUncheckedCreateNestedManyWithoutUserInput
   preferences?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPomodoroLogsInput = {
@@ -783,6 +818,7 @@ export type UserUpdateWithoutPomodoroLogsInput = {
   scheduleItems?: Prisma.ScheduleItemUpdateManyWithoutUserNestedInput
   examTargets?: Prisma.ExamTargetUpdateManyWithoutUserNestedInput
   preferences?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPomodoroLogsInput = {
@@ -798,6 +834,7 @@ export type UserUncheckedUpdateWithoutPomodoroLogsInput = {
   scheduleItems?: Prisma.ScheduleItemUncheckedUpdateManyWithoutUserNestedInput
   examTargets?: Prisma.ExamTargetUncheckedUpdateManyWithoutUserNestedInput
   preferences?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutExamTargetsInput = {
@@ -813,6 +850,7 @@ export type UserCreateWithoutExamTargetsInput = {
   scheduleItems?: Prisma.ScheduleItemCreateNestedManyWithoutUserInput
   pomodoroLogs?: Prisma.PomodoroSessionCreateNestedManyWithoutUserInput
   preferences?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutExamTargetsInput = {
@@ -828,6 +866,7 @@ export type UserUncheckedCreateWithoutExamTargetsInput = {
   scheduleItems?: Prisma.ScheduleItemUncheckedCreateNestedManyWithoutUserInput
   pomodoroLogs?: Prisma.PomodoroSessionUncheckedCreateNestedManyWithoutUserInput
   preferences?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutExamTargetsInput = {
@@ -859,6 +898,7 @@ export type UserUpdateWithoutExamTargetsInput = {
   scheduleItems?: Prisma.ScheduleItemUpdateManyWithoutUserNestedInput
   pomodoroLogs?: Prisma.PomodoroSessionUpdateManyWithoutUserNestedInput
   preferences?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutExamTargetsInput = {
@@ -874,6 +914,7 @@ export type UserUncheckedUpdateWithoutExamTargetsInput = {
   scheduleItems?: Prisma.ScheduleItemUncheckedUpdateManyWithoutUserNestedInput
   pomodoroLogs?: Prisma.PomodoroSessionUncheckedUpdateManyWithoutUserNestedInput
   preferences?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPreferencesInput = {
@@ -889,6 +930,7 @@ export type UserCreateWithoutPreferencesInput = {
   scheduleItems?: Prisma.ScheduleItemCreateNestedManyWithoutUserInput
   pomodoroLogs?: Prisma.PomodoroSessionCreateNestedManyWithoutUserInput
   examTargets?: Prisma.ExamTargetCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPreferencesInput = {
@@ -904,6 +946,7 @@ export type UserUncheckedCreateWithoutPreferencesInput = {
   scheduleItems?: Prisma.ScheduleItemUncheckedCreateNestedManyWithoutUserInput
   pomodoroLogs?: Prisma.PomodoroSessionUncheckedCreateNestedManyWithoutUserInput
   examTargets?: Prisma.ExamTargetUncheckedCreateNestedManyWithoutUserInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPreferencesInput = {
@@ -935,6 +978,7 @@ export type UserUpdateWithoutPreferencesInput = {
   scheduleItems?: Prisma.ScheduleItemUpdateManyWithoutUserNestedInput
   pomodoroLogs?: Prisma.PomodoroSessionUpdateManyWithoutUserNestedInput
   examTargets?: Prisma.ExamTargetUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPreferencesInput = {
@@ -950,6 +994,87 @@ export type UserUncheckedUpdateWithoutPreferencesInput = {
   scheduleItems?: Prisma.ScheduleItemUncheckedUpdateManyWithoutUserNestedInput
   pomodoroLogs?: Prisma.PomodoroSessionUncheckedUpdateManyWithoutUserNestedInput
   examTargets?: Prisma.ExamTargetUncheckedUpdateManyWithoutUserNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutPushSubscriptionsInput = {
+  id?: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  scheduleItems?: Prisma.ScheduleItemCreateNestedManyWithoutUserInput
+  pomodoroLogs?: Prisma.PomodoroSessionCreateNestedManyWithoutUserInput
+  examTargets?: Prisma.ExamTargetCreateNestedManyWithoutUserInput
+  preferences?: Prisma.UserPreferenceCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutPushSubscriptionsInput = {
+  id?: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  scheduleItems?: Prisma.ScheduleItemUncheckedCreateNestedManyWithoutUserInput
+  pomodoroLogs?: Prisma.PomodoroSessionUncheckedCreateNestedManyWithoutUserInput
+  examTargets?: Prisma.ExamTargetUncheckedCreateNestedManyWithoutUserInput
+  preferences?: Prisma.UserPreferenceUncheckedCreateNestedOneWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutPushSubscriptionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPushSubscriptionsInput, Prisma.UserUncheckedCreateWithoutPushSubscriptionsInput>
+}
+
+export type UserUpsertWithoutPushSubscriptionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPushSubscriptionsInput, Prisma.UserUncheckedUpdateWithoutPushSubscriptionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPushSubscriptionsInput, Prisma.UserUncheckedCreateWithoutPushSubscriptionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPushSubscriptionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPushSubscriptionsInput, Prisma.UserUncheckedUpdateWithoutPushSubscriptionsInput>
+}
+
+export type UserUpdateWithoutPushSubscriptionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  scheduleItems?: Prisma.ScheduleItemUpdateManyWithoutUserNestedInput
+  pomodoroLogs?: Prisma.PomodoroSessionUpdateManyWithoutUserNestedInput
+  examTargets?: Prisma.ExamTargetUpdateManyWithoutUserNestedInput
+  preferences?: Prisma.UserPreferenceUpdateOneWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPushSubscriptionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  scheduleItems?: Prisma.ScheduleItemUncheckedUpdateManyWithoutUserNestedInput
+  pomodoroLogs?: Prisma.PomodoroSessionUncheckedUpdateManyWithoutUserNestedInput
+  examTargets?: Prisma.ExamTargetUncheckedUpdateManyWithoutUserNestedInput
+  preferences?: Prisma.UserPreferenceUncheckedUpdateOneWithoutUserNestedInput
 }
 
 
@@ -963,6 +1088,7 @@ export type UserCountOutputType = {
   scheduleItems: number
   pomodoroLogs: number
   examTargets: number
+  pushSubscriptions: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -971,6 +1097,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   scheduleItems?: boolean | UserCountOutputTypeCountScheduleItemsArgs
   pomodoroLogs?: boolean | UserCountOutputTypeCountPomodoroLogsArgs
   examTargets?: boolean | UserCountOutputTypeCountExamTargetsArgs
+  pushSubscriptions?: boolean | UserCountOutputTypeCountPushSubscriptionsArgs
 }
 
 /**
@@ -1018,6 +1145,13 @@ export type UserCountOutputTypeCountExamTargetsArgs<ExtArgs extends runtime.Type
   where?: Prisma.ExamTargetWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPushSubscriptionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PushSubscriptionWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1033,6 +1167,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   pomodoroLogs?: boolean | Prisma.User$pomodoroLogsArgs<ExtArgs>
   examTargets?: boolean | Prisma.User$examTargetsArgs<ExtArgs>
   preferences?: boolean | Prisma.User$preferencesArgs<ExtArgs>
+  pushSubscriptions?: boolean | Prisma.User$pushSubscriptionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1074,6 +1209,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   pomodoroLogs?: boolean | Prisma.User$pomodoroLogsArgs<ExtArgs>
   examTargets?: boolean | Prisma.User$examTargetsArgs<ExtArgs>
   preferences?: boolean | Prisma.User$preferencesArgs<ExtArgs>
+  pushSubscriptions?: boolean | Prisma.User$pushSubscriptionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1088,6 +1224,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     pomodoroLogs: Prisma.$PomodoroSessionPayload<ExtArgs>[]
     examTargets: Prisma.$ExamTargetPayload<ExtArgs>[]
     preferences: Prisma.$UserPreferencePayload<ExtArgs> | null
+    pushSubscriptions: Prisma.$PushSubscriptionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1497,6 +1634,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   pomodoroLogs<T extends Prisma.User$pomodoroLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$pomodoroLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PomodoroSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   examTargets<T extends Prisma.User$examTargetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$examTargetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ExamTargetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   preferences<T extends Prisma.User$preferencesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$preferencesArgs<ExtArgs>>): Prisma.Prisma__UserPreferenceClient<runtime.Types.Result.GetResult<Prisma.$UserPreferencePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  pushSubscriptions<T extends Prisma.User$pushSubscriptionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$pushSubscriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PushSubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2062,6 +2200,30 @@ export type User$preferencesArgs<ExtArgs extends runtime.Types.Extensions.Intern
    */
   include?: Prisma.UserPreferenceInclude<ExtArgs> | null
   where?: Prisma.UserPreferenceWhereInput
+}
+
+/**
+ * User.pushSubscriptions
+ */
+export type User$pushSubscriptionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PushSubscription
+   */
+  select?: Prisma.PushSubscriptionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PushSubscription
+   */
+  omit?: Prisma.PushSubscriptionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PushSubscriptionInclude<ExtArgs> | null
+  where?: Prisma.PushSubscriptionWhereInput
+  orderBy?: Prisma.PushSubscriptionOrderByWithRelationInput | Prisma.PushSubscriptionOrderByWithRelationInput[]
+  cursor?: Prisma.PushSubscriptionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PushSubscriptionScalarFieldEnum | Prisma.PushSubscriptionScalarFieldEnum[]
 }
 
 /**

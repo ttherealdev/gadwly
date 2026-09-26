@@ -28,7 +28,8 @@
     "today": "Today",
     "openMenu": "Open menu",
     "switchLanguage": "Switch language",
-    "account": "Account menu"
+    "account": "Account menu",
+    "settings": "Settings"
   },
   "dashboard": {
     "greeting": "Welcome, {name}",
@@ -190,7 +191,9 @@
     "noise": "Brown noise",
     "skip": "Skip",
     "chime": "Chime when a session ends",
-    "fullscreen": "Full screen"
+    "fullscreen": "Full screen",
+    "notifyFocusDoneTitle": "Focus session completed",
+    "notifyBreakDoneTitle": "Break session completed"
   },
   "auth": {
     "loginTitle": "Sign in to Gadwly",
@@ -211,5 +214,27 @@
     "title": "Page Not Found",
     "description": "The link you clicked is incorrect or the page has been moved.",
     "backHome": "Back to home"
+  },
+  "settings": {
+    "title": "Settings",
+    "tabs": {
+      "notifications": "Notifications",
+      "sounds": "Sounds",
+      "account": "Account"
+    },
+    "comingSoon": "Coming soon",
+    "loading": "Loading...",
+    "prayerNotifications": "Prayer Time Notifications",
+    "pomodoroNotifications": "Pomodoro Timer Notifications",
+    "notificationSound": "Notification Sound",
+    "pushOffThisDevice": "Turn off notifications on this device",
+    "pushUnsupported": "It seems your browser doesn't support notifications. Try using Chrome, Edge, or Firefox.",
+    "pushTitle": "Browser Notifications",
+    "pushEnable": "Enable notifications",
+    "pushOnThisDevice": "Enable notifications on this device",
+    "pushDisable": "Disable notifications",
+    "pushUnavailable": "Not available in this browser right now",
+    "pushUnavailableHint": "Some browsers (like Brave) block background push by default. Without it, you'll still get prayer and focus reminders while the app is open in a tab.",
+    "pushRetry": "Try again"
   }
 }

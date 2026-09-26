@@ -404,7 +404,8 @@ export const ModelName = {
   ScheduleItem: 'ScheduleItem',
   PomodoroSession: 'PomodoroSession',
   ExamTarget: 'ExamTarget',
-  UserPreference: 'UserPreference'
+  UserPreference: 'UserPreference',
+  PushSubscription: 'PushSubscription'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -420,7 +421,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification" | "scheduleItem" | "pomodoroSession" | "examTarget" | "userPreference"
+    modelProps: "user" | "session" | "account" | "verification" | "scheduleItem" | "pomodoroSession" | "examTarget" | "userPreference" | "pushSubscription"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1016,6 +1017,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    PushSubscription: {
+      payload: Prisma.$PushSubscriptionPayload<ExtArgs>
+      fields: Prisma.PushSubscriptionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PushSubscriptionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PushSubscriptionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PushSubscriptionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PushSubscriptionPayload>
+        }
+        findFirst: {
+          args: Prisma.PushSubscriptionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PushSubscriptionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PushSubscriptionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PushSubscriptionPayload>
+        }
+        findMany: {
+          args: Prisma.PushSubscriptionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PushSubscriptionPayload>[]
+        }
+        create: {
+          args: Prisma.PushSubscriptionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PushSubscriptionPayload>
+        }
+        createMany: {
+          args: Prisma.PushSubscriptionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PushSubscriptionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PushSubscriptionPayload>[]
+        }
+        delete: {
+          args: Prisma.PushSubscriptionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PushSubscriptionPayload>
+        }
+        update: {
+          args: Prisma.PushSubscriptionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PushSubscriptionPayload>
+        }
+        deleteMany: {
+          args: Prisma.PushSubscriptionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PushSubscriptionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PushSubscriptionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PushSubscriptionPayload>[]
+        }
+        upsert: {
+          args: Prisma.PushSubscriptionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PushSubscriptionPayload>
+        }
+        aggregate: {
+          args: Prisma.PushSubscriptionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePushSubscription>
+        }
+        groupBy: {
+          args: Prisma.PushSubscriptionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PushSubscriptionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PushSubscriptionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PushSubscriptionCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1167,10 +1242,30 @@ export const UserPreferenceScalarFieldEnum = {
   cityLabel: 'cityLabel',
   prayerNotifyEnabled: 'prayerNotifyEnabled',
   prayerCalcMethod: 'prayerCalcMethod',
+  notifyFajr: 'notifyFajr',
+  notifyDhuhr: 'notifyDhuhr',
+  notifyAsr: 'notifyAsr',
+  notifyMaghrib: 'notifyMaghrib',
+  notifyIsha: 'notifyIsha',
+  pomodoroNotifyEnabled: 'pomodoroNotifyEnabled',
+  notificationSoundOn: 'notificationSoundOn',
   updatedAt: 'updatedAt'
 } as const
 
 export type UserPreferenceScalarFieldEnum = (typeof UserPreferenceScalarFieldEnum)[keyof typeof UserPreferenceScalarFieldEnum]
+
+
+export const PushSubscriptionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  endpoint: 'endpoint',
+  p256dh: 'p256dh',
+  auth: 'auth',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt'
+} as const
+
+export type PushSubscriptionScalarFieldEnum = (typeof PushSubscriptionScalarFieldEnum)[keyof typeof PushSubscriptionScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1466,6 +1561,7 @@ export type GlobalOmitConfig = {
   pomodoroSession?: Prisma.PomodoroSessionOmit
   examTarget?: Prisma.ExamTargetOmit
   userPreference?: Prisma.UserPreferenceOmit
+  pushSubscription?: Prisma.PushSubscriptionOmit
 }
 
 /* Types for Logging */

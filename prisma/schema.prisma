@@ -21,10 +21,11 @@ model User {
   sessions Session[]
   accounts Account[]
 
-  scheduleItems ScheduleItem[]
-  pomodoroLogs  PomodoroSession[]
-  examTargets   ExamTarget[]
-  preferences   UserPreference?
+  scheduleItems     ScheduleItem[]
+  pomodoroLogs      PomodoroSession[]
+  examTargets       ExamTarget[]
+  preferences       UserPreference?
+  pushSubscriptions PushSubscription[]
 
   @@map("user")
 }
@@ -149,17 +150,50 @@ model ExamTarget {
 }
 
 model UserPreference {
-  id                  String   @id @default(cuid())
-  userId              String   @unique
-  locale              String   @default("ar") // "ar" | "en"
-  latitude            Float?
-  longitude           Float?
-  cityLabel           String?
-  prayerNotifyEnabled Boolean  @default(true)
-  prayerCalcMethod    Int      @default(5)
-  updatedAt           DateTime @updatedAt
+  id        String  @id @default(cuid())
+  userId    String  @unique
+  locale    String  @default("ar") // "ar" | "en"
+  latitude  Float?
+  longitude Float?
+  cityLabel String?
+
+  // Prayer times
+  prayerNotifyEnabled Boolean @default(true)
+  prayerCalcMethod    Int     @default(5)
+  notifyFajr          Boolean @default(true)
+  notifyDhuhr         Boolean @default(true)
+  notifyAsr           Boolean @default(true)
+  notifyMaghrib       Boolean @default(true)
+  notifyIsha          Boolean @default(true)
+
+  // Pomodoro
+  pomodoroNotifyEnabled Boolean @default(true)
+
+  // Applies to any browser Notification this app shows (distinct from the
+  // pomodoro widget's own ambient/chime sound, which stays local to that page).
+  notificationSoundOn Boolean @default(true)
+
+  updatedAt DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("user_preference")
+}
+
+// One row per browser/device the user enabled push notifications on.
+// Not wired to a sender yet — this is the schema for the next phase
+// (a server-side push using the `web-push` package + VAPID keys).
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("push_subscription")
 }

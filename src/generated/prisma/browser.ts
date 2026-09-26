@@ -57,3 +57,8 @@ export type ExamTarget = Prisma.ExamTargetModel
  * 
  */
 export type UserPreference = Prisma.UserPreferenceModel
+/**
+ * Model PushSubscription
+ * 
+ */
+export type PushSubscription = Prisma.PushSubscriptionModel

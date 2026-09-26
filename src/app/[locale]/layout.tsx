@@ -1,12 +1,11 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { Tajawal } from "next/font/google";
 import { routing } from "@/i18n/routing";
 import { TRPCProvider } from "@/components/providers/trpc-provider";
-import { AppSidebar } from "@/components/app-sidebar";
-import { SidebarProvider } from "@/components/sidebar-context";
+import { ServiceWorkerRegister } from "@/components/pwa/service-worker-register";
 import { Toaster } from "sonner";
 import "./globals.css";
 
@@ -36,7 +35,25 @@ export async function generateMetadata({
       locale: isAr ? "ar_EG" : "en_US",
       type: "website",
     },
-    icons: { icon: "/favicon.ico" },
+    manifest: "/manifest.json",
+    icons: {
+      icon: "/favicon.ico",
+      apple: "/icons/apple-touch-icon.png",
+    },
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: "default",
+      title: t("name"),
+    },
+  };
+}
+
+export function generateViewport(): Viewport {
+  return {
+    themeColor: "#6ebf64",
+    width: "device-width",
+    initialScale: 1,
+    viewportFit: "cover",
   };
 }
 
@@ -59,10 +76,11 @@ export default async function LocaleLayout({
       <body className="font-sans antialiased">
         <NextIntlClientProvider>
           <TRPCProvider>
-          {children}
+            {children}
             <Toaster position={dir === "rtl" ? "top-left" : "top-right"} richColors />
           </TRPCProvider>
         </NextIntlClientProvider>
+        <ServiceWorkerRegister />
       </body>
     </html>
   );
