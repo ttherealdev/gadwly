@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">جدولي</string>
+    <string name="title_activity_main">جدولي</string>
+    <string name="package_name">com.gadwly.app</string>
+    <string name="custom_url_scheme">com.gadwly.app</string>
+</resources>

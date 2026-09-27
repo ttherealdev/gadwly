@@ -1,0 +1,42 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch: {} # manual "Run workflow" button in the Actions tab
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Install dependencies
+        run: bun install
+
+      # Kept out of the repo on purpose — decoded here from a GitHub secret
+      # instead, so it never touches git history.
+      - name: Restore google-services.json
+        run: echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 -d > android/app/google-services.json
+
+      - name: Sync Capacitor
+        run: bunx cap sync android
+
+      - name: Grant execute permission to gradlew
+        run: chmod +x android/gradlew
+
+      - name: Build debug APK
+        working-directory: android
+        run: ./gradlew assembleDebug
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gadwly-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
