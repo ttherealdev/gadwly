@@ -26,6 +26,16 @@ jobs:
       - name: Restore google-services.json
         run: echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 -d > android/app/google-services.json
 
+      # ubuntu-latest is a fresh VM every run — without this, Gradle would
+      # auto-generate a NEW debug keystore (and a new SHA-1) on every single
+      # build, silently breaking the Android OAuth client the moment you
+      # rebuild. This keeps the same keystore, and therefore the same SHA-1,
+      # across every run.
+      - name: Restore debug keystore
+        run: |
+          mkdir -p ~/.android
+          echo "${{ secrets.DEBUG_KEYSTORE_BASE64 }}" | base64 -d > ~/.android/debug.keystore
+
       - name: Sync Capacitor
         run: bunx cap sync android
 

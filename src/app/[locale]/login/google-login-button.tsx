@@ -3,12 +3,16 @@
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "@/i18n/navigation";
 import { signIn } from "@/lib/auth-client";
+import {
+  GoogleSignInErrorCode,
+  isNativeApp,
+  nativeGoogleSignIn,
+} from "@/lib/native-google-auth";
 
 type Props = {
-  /** Already sanitised on the server (see safeRedirectPath). */
   callbackURL: string;
-  /** True when the OAuth flow came back with ?error=... */
   initialError?: boolean;
   labels: { idle: string; pending: string; error: string };
 };
@@ -20,15 +24,27 @@ export function GoogleLoginButton({
 }: Props) {
   const [pending, setPending] = useState(false);
   const [failed, setFailed] = useState(initialError);
+  const router = useRouter();
 
-  async function handleClick() {
-    // Guards double clicks: each click would create a separate OAuth state.
-    if (pending) return;
-    setPending(true);
-    setFailed(false);
+  async function handleNativeClick() {
+    try {
+      const idToken = await nativeGoogleSignIn();
+      const { error } = await signIn.social({
+        provider: "google",
+        idToken: { token: idToken },
+      });
+      if (error) throw error;
+      router.push(callbackURL);
+    } catch (err) {
+      setPending(false);
+      if ((err as { code?: string } | null)?.code === GoogleSignInErrorCode.SignInCanceled) {
+        return;
+      }
+      setFailed(true);
+    }
+  }
 
-    // If the user cancels on Google's side, come back to this page
-    // (keeping ?next=...) instead of landing on a raw API error page.
+  async function handleWebClick() {
     const back = new URL(window.location.href);
     back.searchParams.delete("error");
 
@@ -39,11 +55,21 @@ export function GoogleLoginButton({
         errorCallbackURL: back.pathname + back.search,
       });
       if (error) throw error;
-      // Success: the client is already navigating to Google.
-      // Keep the pending state until the page unloads.
     } catch {
       setPending(false);
       setFailed(true);
+    }
+  }
+
+  async function handleClick() {
+    if (pending) return;
+    setPending(true);
+    setFailed(false);
+
+    if (isNativeApp()) {
+      await handleNativeClick();
+    } else {
+      await handleWebClick();
     }
   }
 
