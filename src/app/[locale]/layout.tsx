@@ -78,11 +78,11 @@ export default async function LocaleLayout({
         <NextIntlClientProvider>
           <TRPCProvider>
             {children}
+            <ServiceWorkerRegister />
+            <NativePushRegister />
             <Toaster position={dir === "rtl" ? "top-left" : "top-right"} richColors />
           </TRPCProvider>
         </NextIntlClientProvider>
-        <ServiceWorkerRegister />
-        <NativePushRegister />
       </body>
     </html>
   );
