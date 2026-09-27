@@ -21,6 +21,8 @@ jobs:
       - name: Install dependencies
         run: bun install
 
+      # Kept out of the repo on purpose — decoded here from a GitHub secret
+      # instead, so it never touches git history.
       - name: Restore google-services.json
         run: echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 -d > android/app/google-services.json
 
@@ -38,19 +40,3 @@ jobs:
         with:
           name: gadwly-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
-
-      - name: TEMP - Generate a stable debug keystore
-        run: |
-          mkdir -p ~/.android
-          keytool -genkeypair -v -keystore ~/.android/debug.keystore \
-            -storepass android -keypass android -alias androiddebugkey \
-            -keyalg RSA -keysize 2048 -validity 10000 \
-            -dname "CN=Android Debug,O=Android,C=US"
-          echo "=== COPY THIS SHA1 VALUE ==="
-          keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android | grep SHA1
-
-      - name: TEMP - Upload the keystore
-        uses: actions/upload-artifact@v4
-        with:
-          name: debug-keystore
-          path: ~/.android/debug.keystore
