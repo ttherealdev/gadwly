@@ -35,17 +35,26 @@ async function handleNativeClick() {
     });
     if (error) throw error;
     router.push(callbackURL);
-  } catch (err) {
-    setPending(false);
-    const code = (err as { code?: string } | null)?.code;
-    const message = err instanceof Error ? err.message : String(err);
-    if (code === GoogleSignInErrorCode.SignInCanceled) {
-      alert(`cancel-path: ${message || "(no message)"}`);
-      if (!message || /cancel/i.test(message)) return;
-    }
-    alert(`failed: ${message}`);
-    setFailed(true);
+} catch (err) {
+  setPending(false);
+  const code = (err as { code?: string } | null)?.code;
+  const message = err instanceof Error ? err.message : String(err);
+  const details =
+    err && typeof err === "object"
+      ? Object.fromEntries(
+          Object.getOwnPropertyNames(err).map((k) => [k, (err as any)[k]])
+        )
+      : err;
+  fetch("/api/debug-log", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ code, message, details }),
+  }).catch(() => {});
+  if (code === GoogleSignInErrorCode.SignInCanceled) {
+    if (!message || /cancel/i.test(message)) return;
   }
+  setFailed(true);
+}
 }
 
   async function handleWebClick() {
