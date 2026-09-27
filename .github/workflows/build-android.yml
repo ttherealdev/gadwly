@@ -21,6 +21,13 @@ jobs:
       - name: Install dependencies
         run: bun install
 
+      # Fixed debug keystore, so every CI build has the same SHA-1 — required
+      # for the Android OAuth Client (Google Sign-In) to recognize the app.
+      - name: Restore debug keystore
+        run: |
+          mkdir -p ~/.android
+          echo "${{ secrets.DEBUG_KEYSTORE_BASE64 }}" | base64 -d > ~/.android/debug.keystore
+
       # Kept out of the repo on purpose — decoded here from a GitHub secret
       # instead, so it never touches git history.
       - name: Restore google-services.json
