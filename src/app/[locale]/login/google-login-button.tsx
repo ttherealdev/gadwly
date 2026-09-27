@@ -26,27 +26,27 @@ export function GoogleLoginButton({
   const [failed, setFailed] = useState(initialError);
   const router = useRouter();
 
-  async function handleNativeClick() {
-    try {
-      const idToken = await nativeGoogleSignIn();
-      const { error } = await signIn.social({
-        provider: "google",
-        idToken: { token: idToken },
-      });
-      if (error) throw error;
-      router.push(callbackURL);
-    } catch (err) {
-      setPending(false);
-      const code = (err as { code?: string } | null)?.code;
-      const message = err instanceof Error ? err.message : String(err);
-      if (code === GoogleSignInErrorCode.SignInCanceled) {
-        console.warn("[google-signin] treated as cancel, message:", message);
-        if (!message || /cancel/i.test(message)) return;
-      }
-      console.error("[google-signin] failed:", err);
-      setFailed(true);
+async function handleNativeClick() {
+  try {
+    const idToken = await nativeGoogleSignIn();
+    const { error } = await signIn.social({
+      provider: "google",
+      idToken: { token: idToken },
+    });
+    if (error) throw error;
+    router.push(callbackURL);
+  } catch (err) {
+    setPending(false);
+    const code = (err as { code?: string } | null)?.code;
+    const message = err instanceof Error ? err.message : String(err);
+    if (code === GoogleSignInErrorCode.SignInCanceled) {
+      alert(`cancel-path: ${message || "(no message)"}`);
+      if (!message || /cancel/i.test(message)) return;
     }
+    alert(`failed: ${message}`);
+    setFailed(true);
   }
+}
 
   async function handleWebClick() {
     const back = new URL(window.location.href);
