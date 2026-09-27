@@ -1,5 +1,6 @@
 import type { CapacitorConfig } from "@capacitor/cli";
 
+
 const config: CapacitorConfig = {
   appId: "com.gadwly.app",
   appName: "جدولي",
@@ -7,6 +8,7 @@ const config: CapacitorConfig = {
   server: {
     url: "https://gadwly.vercel.app",
     cleartext: false,
+    allowNavigation: ["accounts.google.com"],
   },
   android: {
     allowMixedContent: false,
